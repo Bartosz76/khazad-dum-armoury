@@ -1,4 +1,4 @@
-package bm.app.khazaddumarmoury;
+package bm.app.khazaddumarmoury.catalog.domain;
 
 import java.util.StringJoiner;
 

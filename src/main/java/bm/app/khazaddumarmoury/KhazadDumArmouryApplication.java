@@ -1,5 +1,7 @@
 package bm.app.khazaddumarmoury;
 
+import bm.app.khazaddumarmoury.catalog.domain.Armour;
+import bm.app.khazaddumarmoury.catalog.domain.ArmourService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,10 +18,15 @@ public class KhazadDumArmouryApplication implements CommandLineRunner {
 		SpringApplication.run(KhazadDumArmouryApplication.class, args);
 	}
 
+	private final ArmourService armourService;
+
+	public KhazadDumArmouryApplication(ArmourService armourService) {
+		this.armourService = armourService;
+	}
+
 	@Override
 	public void run(String... args) throws Exception {
-		ArmourService service = new ArmourService();
-		List<Armour> armourSets = service.findByName("Mirrormere Plate");
+		List<Armour> armourSets = armourService.findByName("Mirrormere Plate");
 		armourSets.forEach(System.out::println);
 	}
 }
