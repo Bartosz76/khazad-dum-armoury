@@ -1,4 +1,4 @@
-package bm.app.khazaddumarmoury.catalog.domain;
+package bm.app.khazaddumarmoury.armour.domain;
 
 import java.util.List;
 

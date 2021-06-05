@@ -1,7 +1,7 @@
-package bm.app.khazaddumarmoury.catalog.application;
+package bm.app.khazaddumarmoury.armour.application;
 
-import bm.app.khazaddumarmoury.catalog.domain.Armour;
-import bm.app.khazaddumarmoury.catalog.domain.ArmourService;
+import bm.app.khazaddumarmoury.armour.domain.Armour;
+import bm.app.khazaddumarmoury.armour.domain.ArmourService;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package bm.app.khazaddumarmoury.catalog.infrastructure;
+package bm.app.khazaddumarmoury.armour.infrastructure;
 
-import bm.app.khazaddumarmoury.catalog.domain.Armour;
-import bm.app.khazaddumarmoury.catalog.domain.ArmourRepository;
+import bm.app.khazaddumarmoury.armour.domain.Armour;
+import bm.app.khazaddumarmoury.armour.domain.ArmourRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ public class MemoryArmourRepository implements ArmourRepository {
         hoard.put(1L, new Armour(1L, "Mirrormere Plate", "Full Plate", "Snorri Haggesson", 2354));
         hoard.put(2L, new Armour(2L, "Darkstar", "Helmet", "Nain Dainsson", 1984));
         hoard.put(3L, new Armour(3L, "Tramplers", "Sabatons", "Leifi Grvaldsson", 1956));
+        hoard.put(4L, new Armour(4L, "Mirrorrift", "Breastplate", "Brok Targoghar", 1476));
     }
 
     @Override
