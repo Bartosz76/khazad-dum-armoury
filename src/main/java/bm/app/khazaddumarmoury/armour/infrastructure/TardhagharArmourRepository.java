@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-public class MemoryArmourRepository implements ArmourRepository {
+class TardhagharArmourRepository implements ArmourRepository {
 
     // An implementation of ArmourRepository. It's in the infrastructure as it is... an implementation,
     // it is not a part of the domain per se, but the way the part of the domain is implemented.
@@ -18,11 +18,11 @@ public class MemoryArmourRepository implements ArmourRepository {
 
     private final Map<Long, Armour> hoard = new ConcurrentHashMap<>(); // Safe in multi-threaded environment.
 
-    public MemoryArmourRepository() {
-        hoard.put(1L, new Armour(1L, "Mirrormere Plate", "Full Plate", "Snorri Haggesson", 2354));
-        hoard.put(2L, new Armour(2L, "Darkstar", "Helmet", "Nain Dainsson", 1984));
-        hoard.put(3L, new Armour(3L, "Tramplers", "Sabatons", "Leifi Grvaldsson", 1956));
-        hoard.put(4L, new Armour(4L, "Mirrorrift", "Breastplate", "Brok Targoghar", 1476));
+    public TardhagharArmourRepository() {
+        hoard.put(1L, new Armour(1L, "Scarbrand", "Face mask", "Sordi Trygwasson", 2351));
+        hoard.put(2L, new Armour(2L, "Bloodmyst", "Chainmail", "Gorn Warain", 1684));
+        hoard.put(3L, new Armour(3L, "Yorehope", "Helmet", "Brandin Herryar", 1234));
+        hoard.put(4L, new Armour(4L, "Snowcaps", "Shoulder pads", "Rerir Uzurakh", 1775));
     }
 
     @Override
