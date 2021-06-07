@@ -12,9 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 class TardhagharArmourRepository implements ArmourRepository {
 
-    // An implementation of ArmourRepository. It's in the infrastructure as it is... an implementation,
-    // it is not a part of the domain per se, but the way the part of the domain is implemented.
-    // It's 'Memory', because for now, it's just an in-memory alternative to a database.
+    /**
+     * An implementation of ArmourRepository. It's in the infrastructure as it is... an implementation,
+     * it is not a part of the domain per se, but the way the part of the domain is implemented.
+     * It's 'Memory', because for now, it's just an in-memory alternative to a database.
+     */
 
     private final Map<Long, Armour> hoard = new ConcurrentHashMap<>(); // Safe in multi-threaded environment.
 

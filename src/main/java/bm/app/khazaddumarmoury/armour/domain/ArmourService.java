@@ -13,9 +13,12 @@ public class ArmourService {
 
     private final ArmourRepository armourRepository;
 
-    // In case there are two implementations of ArmourRepository (there are), the @Qualifier
-    // allows me to determine which one of the implementations is going to be injected.
-    // What I provide as a String is the bean's name.
+    /**
+     * In case there are two implementations of ArmourRepository (there are), the @Qualifier
+     * allows me to determine which one of the implementations is going to be injected.
+     * What I provide as a String is the bean's name.
+     */
+
     public ArmourService(@Qualifier("dumuzdinArmourRepository") ArmourRepository armourRepository) {
         this.armourRepository = armourRepository;
     }

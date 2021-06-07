@@ -10,7 +10,9 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class ArmourController {
-    // Controllers go into application layer.
+    /**
+     * Controllers go into application layer.
+     */
 
     private final ArmourService armourService;
 

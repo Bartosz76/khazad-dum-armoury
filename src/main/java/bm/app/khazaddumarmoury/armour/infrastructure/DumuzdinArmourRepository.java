@@ -12,12 +12,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
-//@Primary <- Does exactly the same thing as @Qualified defined currently in ArmourService. In the case
-//of two possible implementations of an interface, shows which one should be used.
+/**
+ * @Primary <- Does exactly the same thing as @Qualified defined currently in ArmourService. In the case
+ * of two possible implementations of an interface, shows which one should be used.
+ */
 public class DumuzdinArmourRepository implements ArmourRepository {
-    // Another implementation of ArmourRepository class to see the conflict solving in a situation
-    // when there are more than two implementations of a used interface - what happens when a class
-    // has an ArmourRepository dependency and there are two implementations of it available.
+
+    /**
+     * Another implementation of ArmourRepository class to see the conflict solving in a situation
+     * when there are more than two implementations of a used interface - what happens when a class
+     * has an ArmourRepository dependency and there are two implementations of it available.
+     */
 
     private final Map<Long, Armour> hoard = new ConcurrentHashMap<>(); // Safe in multi-threaded environment.
 
