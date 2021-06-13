@@ -22,6 +22,7 @@ public class ApplicationStartup implements CommandLineRunner {
 
     private final ArmourController armourController;
     private final String name;
+    private final String smith;
     private final Long limit;
 
     /**
@@ -29,10 +30,12 @@ public class ApplicationStartup implements CommandLineRunner {
      * augment the field 'name'.
      */
     public ApplicationStartup(ArmourController armourController,
-                              @Value("${khazad.armoury.query}") String name, // this is defined in application.properties!
-                              @Value("${khazad.armoury.limit:3}") Long limit) { // the limit of findings I want. It's defined in
-        this.armourController = armourController;                               // application.properties too, but after the
-        this.name = name;                                                       // colon I specified the default value!
+                              @Value("${khazad.armoury.query}") String name,     // this is defined in application.properties!
+                              @Value("${khazad.armoury.second.query}") String smith,
+                              @Value("${khazad.armoury.limit:3}") Long limit) {         // the limit of findings I want. It's defined in
+        this.armourController = armourController;               // application.properties too, but after the
+        this.name = name;                                       // colon I specified the default value!
+        this.smith = smith;
         this.limit = limit;
     }
 
@@ -48,7 +51,11 @@ public class ApplicationStartup implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        List<Armour> armourSets = armourController.findByName(name);
-        armourSets.stream().limit(limit).forEach(System.out::println);
+        List<Armour> armourSetsByName = armourController.findByName(name);
+        armourSetsByName.stream().limit(limit).forEach(System.out::println);
+
+        List<Armour> armourSetsBySmith = armourController.findBySmith(smith);
+        armourSetsBySmith.stream().limit(limit).forEach(System.out::println);
     }
+
 }

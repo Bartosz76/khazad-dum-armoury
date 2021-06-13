@@ -19,4 +19,8 @@ public class ArmourController {
     public List<Armour> findByName(String name) {
         return armourService.findByName(name);
     }
+
+    public List<Armour> findBySmith(String smith) {
+        return armourService.findBySmith(smith);
+    }
 }

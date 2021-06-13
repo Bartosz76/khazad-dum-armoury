@@ -30,4 +30,11 @@ public class ArmourService {
                 .collect(Collectors.toList());
     }
 
+    public List<Armour> findBySmith(String smith) {
+        return armourRepository.findAll()
+                .stream()
+                .filter(armour -> armour.getSmith().startsWith(smith))
+                .collect(Collectors.toList());
+    }
+
 }
