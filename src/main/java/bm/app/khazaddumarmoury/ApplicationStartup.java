@@ -1,8 +1,7 @@
 package bm.app.khazaddumarmoury;
 
-import bm.app.khazaddumarmoury.armour.application.ArmourController;
+import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -20,7 +19,11 @@ public class ApplicationStartup implements CommandLineRunner {
      * the run method will be activated.
      */
 
-    private final ArmourController armourController;
+    /**
+     * ApplicationStartup can access the service class through the 'port' of the layer
+     * which holds my services!
+     */
+    private final ArmourUseCase armourUseCase;
     private final String name;
     private final String smith;
     private final Long limit;
@@ -29,12 +32,12 @@ public class ApplicationStartup implements CommandLineRunner {
      * Defining a constructor instead of @RequiredArgsConstructor, because I need to
      * augment the field 'name'.
      */
-    public ApplicationStartup(ArmourController armourController,
-                              @Value("${khazad.armoury.query}") String name,     // this is defined in application.properties!
+    public ApplicationStartup(ArmourUseCase armourUseCase,
+                              @Value("${khazad.armoury.query}") String name, // this is defined in application.properties!
                               @Value("${khazad.armoury.second.query}") String smith,
-                              @Value("${khazad.armoury.limit:3}") Long limit) {         // the limit of findings I want. It's defined in
-        this.armourController = armourController;               // application.properties too, but after the
-        this.name = name;                                       // colon I specified the default value!
+                              @Value("${khazad.armoury.limit:3}") Long limit) {     // the limit of findings I want. It's defined in
+        this.armourUseCase = armourUseCase;                 // application.properties too, but after the
+        this.name = name;                                   // colon I specified the default value!
         this.smith = smith;
         this.limit = limit;
     }
@@ -51,10 +54,10 @@ public class ApplicationStartup implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        List<Armour> armourSetsByName = armourController.findByName(name);
+        List<Armour> armourSetsByName = armourUseCase.findByName(name);
         armourSetsByName.stream().limit(limit).forEach(System.out::println);
 
-        List<Armour> armourSetsBySmith = armourController.findBySmith(smith);
+        List<Armour> armourSetsBySmith = armourUseCase.findBySmith(smith);
         armourSetsBySmith.stream().limit(limit).forEach(System.out::println);
     }
 
