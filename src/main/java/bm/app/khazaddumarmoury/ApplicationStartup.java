@@ -1,6 +1,7 @@
 package bm.app.khazaddumarmoury;
 
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
+import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.CreateArmourCommand;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -54,11 +55,25 @@ public class ApplicationStartup implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        List<Armour> armourSetsByName = armourUseCase.findByName(name);
-        armourSetsByName.stream().limit(limit).forEach(System.out::println);
+        initData();
+        findArmourSetsByName();
+        findArmourSetsBySmith();
+    }
 
-        List<Armour> armourSetsBySmith = armourUseCase.findBySmith(smith);
+    private void initData() {
+        armourUseCase.addArmour(new CreateArmourCommand("Mirrormere Plate", "Full Plate", "Snorri Haggesson", 2354));
+        armourUseCase.addArmour(new CreateArmourCommand("Darkstar", "Helmet", "Nain Dainsson", 1984));
+        armourUseCase.addArmour(new CreateArmourCommand("Tramplers", "Sabatons", "Leifi Grvaldsson", 1956));
+        armourUseCase.addArmour(new CreateArmourCommand("Mirrorrift", "Breastplate", "Brok Targoghar", 1476));
+    }
+
+    private void findArmourSetsBySmith() {
+        List<Armour> armourSetsBySmith = armourUseCase.findByName(name);
         armourSetsBySmith.stream().limit(limit).forEach(System.out::println);
     }
 
+    private void findArmourSetsByName() {
+        List<Armour> armourSetsByName = armourUseCase.findBySmith(smith);
+        armourSetsByName.stream().limit(limit).forEach(System.out::println);
+    }
 }

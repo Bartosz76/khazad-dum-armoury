@@ -1,6 +1,7 @@
 package bm.app.khazaddumarmoury.armour.application.port;
 
 import bm.app.khazaddumarmoury.armour.domain.Armour;
+import lombok.Value;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,17 +16,34 @@ public interface ArmourUseCase {
      * can be accessed via interfaces held in these 'ports'.
      */
 
-    public List<Armour> findByName(String name);
+    List<Armour> findByName(String name);
 
-    public List<Armour> findBySmith(String smith);
+    List<Armour> findBySmith(String smith);
 
-    public List<Armour> findAll();
+    List<Armour> findAll();
 
-    public Optional<Armour> findOneByNameAndSmith(String name, String smith);
+    Optional<Armour> findOneByNameAndSmith(String name, String smith);
 
-    public void addArmour();
+    void addArmour(CreateArmourCommand command);
 
-    public void removeById(Long id);
+    void removeById(Long id);
 
-    public void updateArmour();
+    void updateArmour();
+
+    /**
+     * This is basically a wrapper for other fields.
+     * These command classes should be held in the interface (instead of the port catalog),
+     * because their lifespan is very short.
+     * The inner class automatically static in an interface.
+     */
+
+    @Value //Makes the class have all the fields private and final as well as gives a constructor.
+           //And getters, setters, toString, etc...
+    class CreateArmourCommand {
+        String name;
+        String type;
+        String smith;
+        Integer year;
+    }
 }
+

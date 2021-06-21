@@ -10,13 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
 /**
  * @Primary <- Does exactly the same thing as @Qualified defined currently in ArmourService. In the case
  * of two possible implementations of an interface, shows which one should be used.
  */
-public class DumuzdinArmourRepository implements ArmourRepository {
+public class MemoryArmourRepository implements ArmourRepository {
+    //Memory, because all data is stored in memory and it needs to be reloaded
+    //during the application's restart.
 
     /**
      * Another implementation of ArmourRepository class to see the conflict solving in a situation
@@ -25,16 +28,21 @@ public class DumuzdinArmourRepository implements ArmourRepository {
      */
 
     private final Map<Long, Armour> hoard = new ConcurrentHashMap<>(); // Safe in multi-threaded environment.
-
-    public DumuzdinArmourRepository() {
-        hoard.put(1L, new Armour(1L, "Mirrormere Plate", "Full Plate", "Snorri Haggesson", 2354));
-        hoard.put(2L, new Armour(2L, "Darkstar", "Helmet", "Nain Dainsson", 1984));
-        hoard.put(3L, new Armour(3L, "Tramplers", "Sabatons", "Leifi Grvaldsson", 1956));
-        hoard.put(4L, new Armour(4L, "Mirrorrift", "Breastplate", "Brok Targoghar", 1476));
-    }
-
+    private final AtomicLong ID_NEXT_VALUE = new AtomicLong(0L); // When I move to a DB, IDs will be assigned by the DB.
+                                                                           // AtomicLong makes sure that, at all times, the ID will be unique.
     @Override
     public List<Armour> findAll() {
         return new ArrayList<>(hoard.values());
+    }
+
+    @Override
+    public void save(Armour armour) {
+        long nextId = nextId();
+        armour.setId(nextId);
+        hoard.put(nextId, armour);
+    }
+
+    private long nextId() {
+        return ID_NEXT_VALUE.getAndIncrement();
     }
 }
