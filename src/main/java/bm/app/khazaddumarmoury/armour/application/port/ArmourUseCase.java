@@ -31,10 +31,12 @@ public interface ArmourUseCase {
     void updateArmour();
 
     /**
-     * This is basically a wrapper for other fields.
+     * This is basically a wrapper for other fields. By using it I can avoid having to pass all the fields separately
+     * as arguments while also I don't want Id field to be taken as an argument now, do I? CreateArmourCommand is,
+     * essentially, a mini DTO.
      * These command classes should be held in the interface (instead of the port catalog),
      * because their lifespan is very short.
-     * The inner class automatically static in an interface.
+     * The inner class automatically is static in an interface.
      */
 
     @Value //Makes the class have all the fields private and final as well as gives a constructor.

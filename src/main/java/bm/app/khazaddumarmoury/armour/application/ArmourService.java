@@ -55,12 +55,16 @@ class ArmourService implements ArmourUseCase {
 
     @Override
     public List<Armour> findAll() {
-        return null;
+        return armourRepository.findAll();
     }
 
     @Override
     public Optional<Armour> findOneByNameAndSmith(String name, String smith) {
-        return Optional.empty();
+        return armourRepository.findAll()
+                               .stream()
+                               .filter(armour -> armour.getName().startsWith(name))
+                               .filter(armour -> armour.getSmith().startsWith(smith))
+                               .findFirst();
     }
 
     /**
