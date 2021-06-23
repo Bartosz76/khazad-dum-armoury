@@ -6,6 +6,8 @@ import bm.app.khazaddumarmoury.armour.domain.ArmourRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -85,7 +87,16 @@ class ArmourService implements ArmourUseCase {
     }
 
     @Override
-    public void updateArmour() {
-
+    public UpdateArmourResponse updateArmour(UpdateArmourCommand command) {
+        return armourRepository.findById(command.getId())
+        .map(armour -> {
+            armour.setName(command.getName());
+            armour.setType(command.getType());
+            armour.setSmith(command.getSmith());
+            armour.setYear(command.getYear());
+            armourRepository.save(armour);
+            return UpdateArmourResponse.SUCCESS;
+        })
+        .orElseGet(() -> new UpdateArmourResponse(false, Collections.singletonList("Armour not found with id: " + command.getId())));
     }
 }

@@ -3,6 +3,7 @@ package bm.app.khazaddumarmoury.armour.application.port;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import lombok.Value;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public interface ArmourUseCase {
 
     void removeById(Long id);
 
-    void updateArmour();
+    UpdateArmourResponse updateArmour(UpdateArmourCommand command);
 
     /**
      * This is basically a wrapper for other fields. By using it I can avoid having to pass all the fields separately
@@ -46,6 +47,30 @@ public interface ArmourUseCase {
         String type;
         String smith;
         Integer year;
+    }
+
+    /**
+     * Command for updating the armour requires an Id... in order to know what record to update.
+     */
+    @Value
+    class UpdateArmourCommand {
+        Long id;
+        String name;
+        String type;
+        String smith;
+        Integer year;
+    }
+
+    /**
+     * Another type of a short-lived class to inform me how the updating went.
+     */
+    @Value
+    class UpdateArmourResponse {
+        //Below to be reused in cases of success.
+        public static UpdateArmourResponse SUCCESS  = new UpdateArmourResponse(true, Collections.emptyList());
+        boolean success;
+        List<String> errors;
+
     }
 }
 

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.*;
+
 @Component
 public class ApplicationStartup implements CommandLineRunner {
 
@@ -58,6 +60,9 @@ public class ApplicationStartup implements CommandLineRunner {
         initData();
         findArmourSetsByName();
         findArmourSetsBySmith();
+        findAndUpdate();
+        findArmourSetsByName();
+        findArmourSetsBySmith();
     }
 
     private void initData() {
@@ -76,4 +81,21 @@ public class ApplicationStartup implements CommandLineRunner {
         List<Armour> armourSetsByName = armourUseCase.findBySmith(smith);
         armourSetsByName.stream().limit(limit).forEach(System.out::println);
     }
+
+    private void findAndUpdate() {
+        System.out.println("Updating armour...");
+        armourUseCase.findOneByNameAndSmith("Mirrorrift", "Brok Targoghar")
+                .ifPresent(armour -> {
+                    UpdateArmourCommand command = new UpdateArmourCommand(
+                            armour.getId(),
+                            "Mirrorwrath",
+                            armour.getType(),
+                            armour.getSmith(),
+                            armour.getYear()
+                    );
+                    armourUseCase.updateArmour(command);
+                });
+    }
+
+
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -37,9 +38,18 @@ public class MemoryArmourRepository implements ArmourRepository {
 
     @Override
     public void save(Armour armour) {
-        long nextId = nextId();
-        armour.setId(nextId);
-        hoard.put(nextId, armour);
+        if (armour.getId() != null) {
+            hoard.put(armour.getId(), armour);
+        } else {
+            long nextId = nextId();
+            armour.setId(nextId);
+            hoard.put(nextId, armour);
+        }
+    }
+
+    @Override
+    public Optional<Armour> findById(Long id) {
+        return Optional.ofNullable(hoard.get(id));
     }
 
     private long nextId() {
