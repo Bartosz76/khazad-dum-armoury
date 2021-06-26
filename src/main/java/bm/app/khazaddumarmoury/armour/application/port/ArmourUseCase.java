@@ -1,6 +1,7 @@
 package bm.app.khazaddumarmoury.armour.application.port;
 
 import bm.app.khazaddumarmoury.armour.domain.Armour;
+import lombok.Builder;
 import lombok.Value;
 
 import java.util.Collections;
@@ -53,12 +54,44 @@ public interface ArmourUseCase {
      * Command for updating the armour requires an Id... in order to know what record to update.
      */
     @Value
+    /**
+     * Adding the Builder to prevent copying and pasting both ways properties of the object being updated (line 89 in
+     * the ApplicationStartUp). The idea is to not have to 'resupply' the values of the fields that are not being
+     * updated - creating the new UpdateArmourCommand, adding a new name for instance... and doing 'armour.getSmith(),
+     * armour.getYear() and so on to just complete this UpdateArmourCommand object.
+     */
+    @Builder
     class UpdateArmourCommand {
         Long id;
         String name;
         String type;
         String smith;
         Integer year;
+
+        /**
+         * This method will prevent nulls when updating a record. I could just as well implement it in a serivce
+         * class when the update record method is defined, but this allows me to minimise the complexity. Below method
+         * will allow the Builder to actually update only the fields that are being updated and it will cover those
+         * not mentioned in the builder.
+         */
+         public Armour updateFields(Armour armour) {
+            if (name != null) {
+                armour.setName(name);
+            }
+            if (type != null) {
+                armour.setType(type);
+            }
+            if (smith != null) {
+                armour.setSmith(smith);
+            }
+            if (year != null) {
+                armour.setYear(year);
+            }
+            return armour;
+            //If they ARE nulls, that means I don't want to change these fields and I want them to remain
+            //what they were before.
+        }
+
     }
 
     /**

@@ -90,11 +90,8 @@ class ArmourService implements ArmourUseCase {
     public UpdateArmourResponse updateArmour(UpdateArmourCommand command) {
         return armourRepository.findById(command.getId())
         .map(armour -> {
-            armour.setName(command.getName());
-            armour.setType(command.getType());
-            armour.setSmith(command.getSmith());
-            armour.setYear(command.getYear());
-            armourRepository.save(armour);
+            Armour updatedArmour = command.updateFields(armour);
+            armourRepository.save(updatedArmour);
             return UpdateArmourResponse.SUCCESS;
         })
         .orElseGet(() -> new UpdateArmourResponse(false, Collections.singletonList("Armour not found with id: " + command.getId())));

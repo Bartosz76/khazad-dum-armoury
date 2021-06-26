@@ -86,13 +86,10 @@ public class ApplicationStartup implements CommandLineRunner {
         System.out.println("Updating armour...");
         armourUseCase.findOneByNameAndSmith("Mirrorrift", "Brok Targoghar")
                 .ifPresent(armour -> {
-                    UpdateArmourCommand command = new UpdateArmourCommand(
-                            armour.getId(),
-                            "Mirrorwrath",
-                            armour.getType(),
-                            armour.getSmith(),
-                            armour.getYear()
-                    );
+                    UpdateArmourCommand command = UpdateArmourCommand.builder()
+                            .id(armour.getId())
+                            .name("Mirrorwrath")
+                            .build();
                     armourUseCase.updateArmour(command);
                 });
     }
