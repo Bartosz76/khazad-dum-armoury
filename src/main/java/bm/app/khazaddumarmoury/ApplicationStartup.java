@@ -91,6 +91,8 @@ public class ApplicationStartup implements CommandLineRunner {
                             .name("Mirrorwrath")
                             .build();
                     armourUseCase.updateArmour(command);
+                    UpdateArmourResponse response = armourUseCase.updateArmour(command);
+                    System.out.println("Updating the armour with result: " + response.isSuccess());
                 });
     }
 

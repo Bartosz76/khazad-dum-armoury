@@ -52,6 +52,11 @@ public class MemoryArmourRepository implements ArmourRepository {
         return Optional.ofNullable(hoard.get(id));
     }
 
+    @Override
+    public void removeById(Long id) {
+        hoard.remove(id);
+    }
+
     private long nextId() {
         return ID_NEXT_VALUE.getAndIncrement();
     }

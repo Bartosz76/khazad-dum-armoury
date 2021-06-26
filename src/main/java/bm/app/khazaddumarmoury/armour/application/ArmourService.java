@@ -83,7 +83,7 @@ class ArmourService implements ArmourUseCase {
 
     @Override
     public void removeById(Long id) {
-
+        armourRepository.removeById(id);
     }
 
     @Override

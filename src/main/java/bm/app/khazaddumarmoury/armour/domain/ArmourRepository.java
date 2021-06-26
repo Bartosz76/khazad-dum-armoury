@@ -10,4 +10,6 @@ public interface ArmourRepository {
     void save(Armour armour);
 
     Optional<Armour> findById(Long id);
+
+    void removeById(Long id);
 }
