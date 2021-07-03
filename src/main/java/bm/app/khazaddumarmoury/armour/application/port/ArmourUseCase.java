@@ -4,6 +4,7 @@ import bm.app.khazaddumarmoury.armour.domain.Armour;
 import lombok.Builder;
 import lombok.Value;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,7 @@ public interface ArmourUseCase {
         String type;
         String smith;
         Integer year;
+        BigDecimal price;
     }
 
     /**
@@ -69,7 +71,7 @@ public interface ArmourUseCase {
         Integer year;
 
         /**
-         * This method will prevent nulls when updating a record. I could just as well implement it in a serivce
+         * This method will prevent nulls when updating a record. I could just as well implement it in a Service
          * class when the update record method is defined, but this allows me to minimise the complexity. Below method
          * will allow the Builder to actually update only the fields that are being updated and it will cover those
          * not mentioned in the builder.
