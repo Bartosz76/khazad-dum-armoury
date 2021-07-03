@@ -1,18 +1,23 @@
 package bm.app.khazaddumarmoury.order.domain;
 
+import lombok.Data;
 import lombok.Value;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Value
+/**
+ * What's in the domain, can be accessible from the outside. Hence -> public classes.
+ */
+
+@Data
 public class Order {
-    Long id;
-    List<OrderItem> items;
-    Recipient recipient;
-    OrderStatus status;
-    LocalDateTime createdAt;
+    private Long id;
+    private List<OrderItem> items;
+    private Recipient recipient;
+    private OrderStatus status;
+    private LocalDateTime createdAt;
 
     /**
      * Counting the price of the armour piece.
