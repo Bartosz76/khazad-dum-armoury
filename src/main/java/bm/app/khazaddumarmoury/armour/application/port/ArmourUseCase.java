@@ -49,7 +49,6 @@ public interface ArmourUseCase {
         String type;
         String smith;
         Integer year;
-        BigDecimal price;
     }
 
     /**

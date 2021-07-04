@@ -77,7 +77,7 @@ class ArmourService implements ArmourUseCase {
      */
     @Override
     public void addArmour(CreateArmourCommand command) { //If something goes wrong later on -> I added the price to the Command. Make sure there's no problem with that.
-        Armour armour = new Armour(command.getName(), command.getType(), command.getSmith(), command.getYear(), command.getPrice());
+        Armour armour = new Armour(command.getName(), command.getType(), command.getSmith(), command.getYear());
         armourRepository.save(armour);
     }
 

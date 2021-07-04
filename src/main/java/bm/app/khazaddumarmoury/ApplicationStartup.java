@@ -58,6 +58,14 @@ public class ApplicationStartup implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         initData();
+        searchArmour();
+        placeOrder();
+    }
+
+    private void placeOrder() {
+    }
+
+    private void searchArmour() {
         findArmourSetsByName();
         findArmourSetsBySmith();
         findAndUpdate();
