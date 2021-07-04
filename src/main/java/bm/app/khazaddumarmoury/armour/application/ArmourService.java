@@ -41,6 +41,14 @@ class ArmourService implements ArmourUseCase {
     }
 
     @Override
+    public Optional<Armour> findOneByName(String name) {
+        return armourRepository.findAll()
+                .stream()
+                .filter(armour -> armour.getName().startsWith(name))
+                .findFirst();
+    }
+
+    @Override
     public List<Armour> findBySmith(String smith) {
         return armourRepository.findAll()
                 .stream()
@@ -77,7 +85,7 @@ class ArmourService implements ArmourUseCase {
      */
     @Override
     public void addArmour(CreateArmourCommand command) { //If something goes wrong later on -> I added the price to the Command. Make sure there's no problem with that.
-        Armour armour = new Armour(command.getName(), command.getType(), command.getSmith(), command.getYear());
+        Armour armour = command.toArmour();
         armourRepository.save(armour);
     }
 

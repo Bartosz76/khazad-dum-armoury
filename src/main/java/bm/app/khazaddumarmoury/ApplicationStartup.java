@@ -3,13 +3,20 @@ package bm.app.khazaddumarmoury;
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.CreateArmourCommand;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
+import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase;
+import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
+import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
+import bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase;
+import bm.app.khazaddumarmoury.order.domain.OrderItem;
+import bm.app.khazaddumarmoury.order.domain.Recipient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import static bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.*;
+import static bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.*; //To make the usage of PlaceOrderCommand look more elegant.
 
 @Component
 public class ApplicationStartup implements CommandLineRunner {
@@ -27,6 +34,8 @@ public class ApplicationStartup implements CommandLineRunner {
      * which holds my services!
      */
     private final ArmourUseCase armourUseCase;
+    private final PlaceOrderUseCase placeOrderUseCase;
+    private final QueryOrderUseCase queryOrderUseCase;
     private final String name;
     private final String smith;
     private final Long limit;
@@ -36,11 +45,15 @@ public class ApplicationStartup implements CommandLineRunner {
      * augment the field 'name'.
      */
     public ApplicationStartup(ArmourUseCase armourUseCase,
+                              PlaceOrderUseCase placeOrderUseCase,
+                              QueryOrderUseCase queryOrderUseCase,
                               @Value("${khazad.armoury.query}") String name, // this is defined in application.properties!
                               @Value("${khazad.armoury.second.query}") String smith,
                               @Value("${khazad.armoury.limit:3}") Long limit) {     // the limit of findings I want. It's defined in
         this.armourUseCase = armourUseCase;                 // application.properties too, but after the
-        this.name = name;                                   // colon I specified the default value!
+        this.placeOrderUseCase = placeOrderUseCase;         // colon I specified the default value!
+        this.queryOrderUseCase = queryOrderUseCase;
+        this.name = name;
         this.smith = smith;
         this.limit = limit;
     }
@@ -63,6 +76,39 @@ public class ApplicationStartup implements CommandLineRunner {
     }
 
     private void placeOrder() {
+
+        //First off, I need to find armour pieces to be purchased in the 'armoury'.
+        Armour mirrorwrath = armourUseCase.findOneByName("Mirrorwrath").orElseThrow(() -> new IllegalStateException("Cannot find the armour piece."));
+        Armour darkstar = armourUseCase.findOneByName("Darkstar").orElseThrow(() -> new IllegalStateException("Cannot find the armour piece."));
+
+        //Creating a recipient.
+        Recipient recipient = Recipient
+                .builder()
+                .name("Halgrim Targoghar")
+                .runePhone("514-666-666")
+                .street("Heroes of Sugzalithar 2")
+                .hold("Tardhaghar")
+                .holdCode("32-666")
+                .runeEmail("halgrim@targoghar.tmail.com")
+                .build();
+
+        //Creating a PlaceOrderCommand (to have 'parameters' for the .placeOrder() method).
+        PlaceOrderCommand command = PlaceOrderCommand
+                .builder()
+                .recipient(recipient)
+                .item(new OrderItem(mirrorwrath, 2))
+                .item(new OrderItem(darkstar, 4))
+                .build();
+
+        //Placing the order itself.
+        PlaceOrderResponse response = placeOrderUseCase.placeOrder(command);
+        System.out.println("Created the order with id: " + response.getOrderId());
+
+        //Listing all orders.
+        queryOrderUseCase.findAll()
+                .forEach(order -> {
+                    System.out.println("Placed an order with a total price of: " + order.totalPrice() + ". Details of the order: " + order);
+                });
     }
 
     private void searchArmour() {
@@ -74,10 +120,10 @@ public class ApplicationStartup implements CommandLineRunner {
     }
 
     private void initData() {
-        armourUseCase.addArmour(new CreateArmourCommand("Mirrormere Plate", "Full Plate", "Snorri Haggesson", 2354));
-        armourUseCase.addArmour(new CreateArmourCommand("Darkstar", "Helmet", "Nain Dainsson", 1984));
-        armourUseCase.addArmour(new CreateArmourCommand("Tramplers", "Sabatons", "Leifi Grvaldsson", 1956));
-        armourUseCase.addArmour(new CreateArmourCommand("Mirrorrift", "Breastplate", "Brok Targoghar", 1476));
+        armourUseCase.addArmour(new CreateArmourCommand("Mirrormere Plate", "Full Plate", "Snorri Haggesson", 2354, new BigDecimal("7000")));
+        armourUseCase.addArmour(new CreateArmourCommand("Darkstar", "Helmet", "Nain Dainsson", 1984, new BigDecimal("2500")));
+        armourUseCase.addArmour(new CreateArmourCommand("Tramplers", "Sabatons", "Leifi Grvaldsson", 1956, new BigDecimal("1300")));
+        armourUseCase.addArmour(new CreateArmourCommand("Mirrorrift", "Breastplate", "Brok Targoghar", 1476, new BigDecimal("3000")));
     }
 
     private void findArmourSetsBySmith() {

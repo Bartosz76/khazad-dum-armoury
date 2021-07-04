@@ -23,7 +23,6 @@ public class PlaceOrderService implements PlaceOrderUseCase {
         /**
          * Creating the order like I did it above, the Order's field status would be a null... but it won't be due
          * to the setting of a default value for that field in the Order class.
-         *
          */
     }
 }

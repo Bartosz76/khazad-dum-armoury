@@ -21,6 +21,8 @@ public interface ArmourUseCase {
 
     List<Armour> findByName(String name);
 
+    Optional<Armour> findOneByName(String name);
+
     List<Armour> findBySmith(String smith);
 
     List<Armour> findAll();
@@ -49,6 +51,16 @@ public interface ArmourUseCase {
         String type;
         String smith;
         Integer year;
+        BigDecimal price;
+
+        /**
+         * As long as the creation of a domain object is pretty simple, devoid of any validation or complicated logic,
+         * I can create a method here, in the Command, to create such an object, so there's less 'noise' in the
+         * service itself. It's just a part of the Command pattern.
+         */
+        public Armour toArmour() {
+            return new Armour(name, type, smith, year, price);
+        }
     }
 
     /**
@@ -68,6 +80,7 @@ public interface ArmourUseCase {
         String type;
         String smith;
         Integer year;
+        BigDecimal price;
 
         /**
          * This method will prevent nulls when updating a record. I could just as well implement it in a Service
