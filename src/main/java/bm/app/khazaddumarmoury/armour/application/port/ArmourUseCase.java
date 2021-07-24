@@ -27,6 +27,8 @@ public interface ArmourUseCase {
 
     List<Armour> findAll();
 
+    Optional<Armour> findById(Long id);
+
     Optional<Armour> findOneByNameAndSmith(String name, String smith);
 
     void addArmour(CreateArmourCommand command);

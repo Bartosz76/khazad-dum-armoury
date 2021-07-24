@@ -4,6 +4,7 @@ import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,4 +28,10 @@ public class ArmourController {
     public List<Armour> getAll() {
         return armourUseCase.findAll();
     }
+
+    @GetMapping("/{id}")
+    public Armour getById(@PathVariable Long id) {
+        return armourUseCase.findById(id).orElse(null);
+    }
+
 }

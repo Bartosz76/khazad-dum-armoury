@@ -69,6 +69,11 @@ class ArmourService implements ArmourUseCase {
     }
 
     @Override
+    public Optional<Armour> findById(Long id) {
+        return armourRepository.findById(id);
+    }
+
+    @Override
     public Optional<Armour> findOneByNameAndSmith(String name, String smith) {
         return armourRepository.findAll()
                                .stream()
@@ -79,9 +84,9 @@ class ArmourService implements ArmourUseCase {
 
     /**
      * Technically, I can just take Armour as a parameter and automatically load it into the "DB",
-     * but would prevent the logic, like validation, from being used here. I would need to do it
+     * but that would prevent the logic, like validation, from being used here. I would need to do it
      * elsewhere. I'd prefer to validate the parameters before creating an object.
-     * I can also just take in all the parameters separately... Or I can take one argument - a Commend.
+     * I can also just take in all the parameters separately... Or I can take one argument - a Command.
      */
     @Override
     public void addArmour(CreateArmourCommand command) { //If something goes wrong later on -> I added the price to the Command. Make sure there's no problem with that.
