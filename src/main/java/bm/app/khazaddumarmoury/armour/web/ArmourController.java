@@ -3,10 +3,9 @@ package bm.app.khazaddumarmoury.armour.web;
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,14 +23,27 @@ public class ArmourController {
      */
     private final ArmourUseCase armourUseCase;
 
+    /**
+     * HttpStatus.OK jest zwracany przez metody domyślnie.
+     */
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public List<Armour> getAll() {
         return armourUseCase.findAll();
     }
 
+    /**
+     * ResponseEntity allows me to define what headers, body or status code I am returning. I can create it by a
+     * constructor or by builders.
+     * I can use either ResponseStatus annotation when the status will always be the same or I can use ResponseEntity
+     * when I want to define the response codes dynamically.
+     */
     @GetMapping("/{id}")
-    public Armour getById(@PathVariable Long id) {
-        return armourUseCase.findById(id).orElse(null);
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        return armourUseCase
+                .findById(id)
+                .map(ResponseEntity::ok) //If the armour is present, I wrap it in my ResponseEntity.ok response...
+                .orElse(ResponseEntity.notFound().build()); //If it's not present, the ResponseCode assumes the status of notFound.
     }
 
 }
