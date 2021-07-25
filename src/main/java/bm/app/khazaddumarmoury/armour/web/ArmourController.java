@@ -3,13 +3,20 @@ package bm.app.khazaddumarmoury.armour.web;
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.*;
 
 @RequestMapping("/armour")
 @RestController // Registered as a Spring's bean!
@@ -70,6 +77,55 @@ public class ArmourController {
                 .findById(id)
                 .map(ResponseEntity::ok) //If the armour is present, I wrap it in my ResponseEntity.ok response...
                 .orElse(ResponseEntity.notFound().build()); //If it's not present, the ResponseCode assumes the status of notFound.
+    }
+
+    /**
+     * Apart from just adding a new armour piece, I could also return the path to that new record while at it. I changed
+     * the return type of .addArmour() methods in the service and repository (and their interfaces, obviously) to
+     * Armour instead of void, because thanks to that - I will be able to get that new record's id!
+     * It's a good practice in REST, to return the header with the location of a resource (so its id) -> so it is
+     * known where the new record can be found.
+     * In order to return the path to my new endpoint (the location of the file, the path with its id at the end!), I
+     * need to use ServletUriComponentBuilder.
+     * ResponseEntity has <Void> because it doesn't return any body, it only returns the header. I think that <?>
+     * would also work but <Void> might be more telling.
+     */
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Void> addArmour(@RequestBody RestCreateArmourCommand command) {
+        Armour armour = armourUseCase.addArmour(command.toCommand());
+        URI uri = createdArmourUri(armour); //Here I am building the URI!
+        return ResponseEntity.created(uri).build();
+    }
+
+    private URI createdArmourUri(Armour armour) {
+        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + armour.getId().toString()).build().toUri();
+    }
+
+    /**
+     * Another mini DTO. It is going to be used to avoid taking in and putting out pure entities.
+     * @Data provides me with getters and setters. Spring requires them in order to be able to map the payload (the body
+     * in JSON) into the instance of the class!
+     * This has a prefix of 'Rest' because I already have CreateArmourCommand defined in the code and it's used for
+     * the purpose of saving a new armour piece in my memory repository.
+     * This one though will be used to save a new armour piece but from the web layer.
+     */
+    @Data
+    private static class RestCreateArmourCommand {
+        private String name;
+        private String type;
+        private String smith;
+        private Integer year;
+        private BigDecimal price;
+
+        /**
+         * I could use the previously defined CreateArmourCommand in my .addArmour() method, but RestCreateArmourCommand
+         * might need another kind of validation. So I am creating RestCreateArmourCommand as a 'wrapper', a stage to
+         * pass through on the way to return a CreateArmourCommand.
+         */
+        CreateArmourCommand toCommand() {
+            return new CreateArmourCommand(name, type, smith, year, price);
+        }
     }
 
 }

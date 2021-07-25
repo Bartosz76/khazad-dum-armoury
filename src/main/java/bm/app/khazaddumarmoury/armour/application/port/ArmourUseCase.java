@@ -33,7 +33,7 @@ public interface ArmourUseCase {
 
     List<Armour> findByNameAndSmith(String name, String smith);
 
-    void addArmour(CreateArmourCommand command);
+    Armour addArmour(CreateArmourCommand command);
 
     void removeById(Long id);
 

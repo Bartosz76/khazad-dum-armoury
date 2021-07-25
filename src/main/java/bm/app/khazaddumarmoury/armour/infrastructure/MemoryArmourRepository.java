@@ -37,7 +37,7 @@ public class MemoryArmourRepository implements ArmourRepository {
     }
 
     @Override
-    public void save(Armour armour) {
+    public Armour save(Armour armour) {
         if (armour.getId() != null) {
             hoard.put(armour.getId(), armour);
         } else {
@@ -45,6 +45,7 @@ public class MemoryArmourRepository implements ArmourRepository {
             armour.setId(nextId);
             hoard.put(nextId, armour);
         }
+        return armour;
     }
 
     @Override

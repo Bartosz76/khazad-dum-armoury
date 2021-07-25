@@ -97,9 +97,9 @@ class ArmourService implements ArmourUseCase {
      * I can also just take in all the parameters separately... Or I can take one argument - a Command.
      */
     @Override
-    public void addArmour(CreateArmourCommand command) { //If something goes wrong later on -> I added the price to the Command. Make sure there's no problem with that.
+    public Armour addArmour(CreateArmourCommand command) { //If something goes wrong later on -> I added the price to the Command. Make sure there's no problem with that.
         Armour armour = command.toArmour();
-        armourRepository.save(armour);
+        return armourRepository.save(armour);
     }
 
     @Override

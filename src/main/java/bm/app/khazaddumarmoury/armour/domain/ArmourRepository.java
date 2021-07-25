@@ -7,7 +7,7 @@ public interface ArmourRepository {
 
     List<Armour> findAll();
 
-    void save(Armour armour);
+    Armour save(Armour armour);
 
     Optional<Armour> findById(Long id);
 
