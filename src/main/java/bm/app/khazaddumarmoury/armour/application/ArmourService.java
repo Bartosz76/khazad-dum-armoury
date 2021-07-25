@@ -6,10 +6,7 @@ import bm.app.khazaddumarmoury.armour.domain.ArmourRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +33,7 @@ class ArmourService implements ArmourUseCase {
     public List<Armour> findByName(String name) {
         return armourRepository.findAll()
                 .stream()
-                .filter(armour -> armour.getName().startsWith(name))
+                .filter(armour -> armour.getName().toLowerCase().startsWith(name.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -52,7 +49,7 @@ class ArmourService implements ArmourUseCase {
     public List<Armour> findBySmith(String smith) {
         return armourRepository.findAll()
                 .stream()
-                .filter(armour -> armour.getSmith().startsWith(smith))
+                .filter(armour -> armour.getSmith().toLowerCase().contains(smith.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -73,6 +70,8 @@ class ArmourService implements ArmourUseCase {
         return armourRepository.findById(id);
     }
 
+
+
     @Override
     public Optional<Armour> findOneByNameAndSmith(String name, String smith) {
         return armourRepository.findAll()
@@ -80,6 +79,15 @@ class ArmourService implements ArmourUseCase {
                                .filter(armour -> armour.getName().startsWith(name))
                                .filter(armour -> armour.getSmith().startsWith(smith))
                                .findFirst();
+    }
+
+    @Override
+    public List<Armour> findByNameAndSmith(String name, String smith) {
+        return armourRepository.findAll()
+                .stream()
+                .filter(armour -> armour.getName().toLowerCase().contains(name.toLowerCase()))
+                .filter(armour -> armour.getSmith().toLowerCase().contains(smith.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     /**

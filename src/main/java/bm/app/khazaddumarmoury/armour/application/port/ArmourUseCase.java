@@ -31,6 +31,8 @@ public interface ArmourUseCase {
 
     Optional<Armour> findOneByNameAndSmith(String name, String smith);
 
+    List<Armour> findByNameAndSmith(String name, String smith);
+
     void addArmour(CreateArmourCommand command);
 
     void removeById(Long id);
