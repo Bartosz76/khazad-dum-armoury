@@ -37,6 +37,7 @@ public class ArmourController {
      * If I add /?name=??? or /?smith=??? to my URL, that's query param in action.
      * An URL like /?name=mirro&smith=bro will also run properly. That's because the logic is based on
      * .contains() so just parts of the Strings will suffice.
+     * Optional is a better version of "required = false" added to @RequestParam.
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -77,6 +78,7 @@ public class ArmourController {
                 .findById(id)
                 .map(ResponseEntity::ok) //If the armour is present, I wrap it in my ResponseEntity.ok response...
                 .orElse(ResponseEntity.notFound().build()); //If it's not present, the ResponseCode assumes the status of notFound.
+                //.notFound() returns a different object than .ok() -> so it needs .build() as well.
     }
 
     /**
@@ -96,6 +98,16 @@ public class ArmourController {
         Armour armour = armourUseCase.addArmour(command.toCommand());
         URI uri = createdArmourUri(armour); //Here I am building the URI!
         return ResponseEntity.created(uri).build();
+    }
+
+    /**
+     * NO_CONTENT is a standard status to be returned when removing an object regardless of whether it was present
+     * or not.
+     */
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) {
+        armourUseCase.removeById(id);
     }
 
     private URI createdArmourUri(Armour armour) {
