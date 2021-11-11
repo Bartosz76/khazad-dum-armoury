@@ -9,6 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -58,7 +62,7 @@ public class ArmourController {
     /**
      * If I want a parameter to be optional, I can use @RequestParam(required = false)... or I can use an Optional.
      * I am moving the below logic to the method getAll() above. Don't want to lose param = something construction
-     * though.
+     * though. That param = {"name"} means that this one param is required!
      */
 //    @GetMapping(params = {"name"}) //A query param - to be added to the URL as /?name = providedName (e.g. Mirrorwrath).
 //    @ResponseStatus(HttpStatus.OK)
@@ -91,10 +95,12 @@ public class ArmourController {
      * need to use ServletUriComponentBuilder.
      * ResponseEntity has <Void> because it doesn't return any body, it only returns the header. I think that <?>
      * would also work but <Void> might be more telling.
+     * @Valid makes Spring attempt to validate the input (I think it's thanks to jsr-303). I also need to specify
+     * what "validate" is supposed to mean in practice -> it's done within the RestCreateArmourCommand itself!
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> addArmour(@RequestBody RestCreateArmourCommand command) {
+    public ResponseEntity<Void> addArmour(@Valid @RequestBody RestCreateArmourCommand command) {
         Armour armour = armourUseCase.addArmour(command.toCommand());
         URI uri = createdArmourUri(armour); //Here I am building the URI!
         return ResponseEntity.created(uri).build();
@@ -121,19 +127,32 @@ public class ArmourController {
      * This has a prefix of 'Rest' because I already have CreateArmourCommand defined in the code and it's used for
      * the purpose of saving a new armour piece in my memory repository.
      * This one though will be used to save a new armour piece but from the web layer.
+     *
+     * I also need some validation! Right now I am just assuming the user's good will and just passing it forward
+     * into the app. This could result, e.g. in a armour piece without the smith's name or a negative number for
+     * a price.
+     * I can utilize the project 'jsr-303' that will automatically validate the input.
+     * @NotBlank, @NotNull, @DecimalMin -> are annotations given to me by this project.
+     *
      */
     @Data
     private static class RestCreateArmourCommand {
+        @NotBlank //I don't want the field to be blank.
         private String name;
+        @NotBlank
         private String type;
+        @NotBlank
         private String smith;
+        @NotNull
         private Integer year;
+        @NotNull
+        @DecimalMin("0.00")
         private BigDecimal price;
 
         /**
          * I could use the previously defined CreateArmourCommand in my .addArmour() method, but RestCreateArmourCommand
          * might need another kind of validation. So I am creating RestCreateArmourCommand as a 'wrapper', a stage to
-         * pass through on the way to return a CreateArmourCommand.
+         * pass through on the way to return a CreateArmourCommand. So basically another layer of abstraction.
          */
         CreateArmourCommand toCommand() {
             return new CreateArmourCommand(name, type, smith, year, price);

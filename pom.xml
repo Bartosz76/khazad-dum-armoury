@@ -19,6 +19,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<lombok.version>1.18.20</lombok.version>
+		<hibernate-validator-version>6.1.5.Final</hibernate-validator-version>
 	</properties>
 
 	<dependencies>
@@ -43,6 +44,13 @@
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 			<scope>provided</scope>
+		</dependency>
+
+<!--		Hibernate contains one of the implementation of jsr-303.-->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator-version}</version>
 		</dependency>
 	</dependencies>
 

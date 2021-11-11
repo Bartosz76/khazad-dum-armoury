@@ -24,7 +24,7 @@ public interface PlaceOrderUseCase {
 
     /**
      * Again, I use the Command Pattern to have a 'wrapper' for fields I would be passing
-     * in if I wasn't using a Command. So this is my mini DTO. The Command encapsulate
+     * in if I wasn't using a Command. So this is my mini DTO. The Command encapsulates
      * what is being passed into the order.
      * I could just pass in parameters instead... but this is more elegant.
      */
