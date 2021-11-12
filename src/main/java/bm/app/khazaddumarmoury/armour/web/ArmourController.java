@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -16,8 +17,7 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.*;
@@ -121,6 +121,33 @@ public class ArmourController {
     }
 
     /**
+     * I can handle the exceptions caused by the creation of the RestCreateArmourCommand either here or
+     * in a separate class. The lack of any of the arguments will yield "MethodArgumentNotValidException",
+     * so that's what I will handle.
+     * Exception is injected so I have access to it body and can extract data from it.
+     * Note -> this works only if defined/called before the declaration of RestArmourCreateCommand.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class) // When this exception is thrown -> method will be called.
+    public ResponseEntity<Object> handleException(MethodArgumentNotValidException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        //Below are unnecessary, but useful. Timestamp will tell me when the exception occurred.
+        body.put("timestamp", new Date());
+        body.put("status", status.value());
+        //To get the actual error...
+        List<String> errors = ex
+                .getBindingResult()
+                .getFieldErrors() //Extracting the errors...
+                .stream() //To open a stream to build String messages...
+                .map(x -> x.getField() + " - " + x.getDefaultMessage()) //That consist of the name of the field that had the error and the message what's wrong.
+                .collect(Collectors.toList());
+        //These messages (what's wrong) are currently default ones... Unless I add my custom message
+        //in the brackets next to @NotNull (and other) annotations within my RestArmourCreateCommand.
+        body.put("errors", errors);
+        return new ResponseEntity<>(body, status);
+    }
+
+    /**
      * Another mini DTO. It is going to be used to avoid taking in and putting out pure entities.
      * @Data provides me with getters and setters. Spring requires them in order to be able to map the payload (the body
      * in JSON) into the instance of the class!
@@ -128,24 +155,23 @@ public class ArmourController {
      * the purpose of saving a new armour piece in my memory repository.
      * This one though will be used to save a new armour piece but from the web layer.
      *
-     * I also need some validation! Right now I am just assuming the user's good will and just passing it forward
+     * I also need some validation! Without it I am just assuming the user's good will and just passing it forward
      * into the app. This could result, e.g. in a armour piece without the smith's name or a negative number for
      * a price.
      * I can utilize the project 'jsr-303' that will automatically validate the input.
      * @NotBlank, @NotNull, @DecimalMin -> are annotations given to me by this project.
-     *
      */
     @Data
     private static class RestCreateArmourCommand {
-        @NotBlank //I don't want the field to be blank.
+        @NotBlank(message = "Provide the name of the armour piece.")
         private String name;
-        @NotBlank
+        @NotBlank(message = "Provide the type of the armour piece.")
         private String type;
-        @NotBlank
+        @NotBlank(message = "Provide the name of the smith.")
         private String smith;
-        @NotNull
+        @NotNull(message = "Provide the year of its creation.")
         private Integer year;
-        @NotNull
+        @NotNull(message = "Provide the price.")
         @DecimalMin("0.00")
         private BigDecimal price;
 
