@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -78,6 +79,11 @@ public class ArmourController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
+        //This is one way to handle exceptions -> ResponseStatusException is an exception provided by Spring and
+        //it handles itself! I don't need to write my own handler for it.
+        if (id.equals(72L)) {
+            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "No 72, because reasons.");
+        }
         return armourUseCase
                 .findById(id)
                 .map(ResponseEntity::ok) //If the armour is present, I wrap it in my ResponseEntity.ok response...
@@ -124,28 +130,32 @@ public class ArmourController {
      * I can handle the exceptions caused by the creation of the RestCreateArmourCommand either here or
      * in a separate class. The lack of any of the arguments will yield "MethodArgumentNotValidException",
      * so that's what I will handle.
-     * Exception is injected so I have access to it body and can extract data from it.
+     * Exception is injected so I have access to its body and can extract data from it.
      * Note -> this works only if defined/called before the declaration of RestArmourCreateCommand.
+     * If the ExceptionHandler method remains here, it will only handle the exceptions thrown within the functional
+     * scope of this class. If I want it to more general purpose - I need to move it to another class...
+     * Which I am just doing (it's in the CustomGlobalExceptionHandler class). I am leaving it here for
+     * informational purposes.
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class) // When this exception is thrown -> method will be called.
-    public ResponseEntity<Object> handleException(MethodArgumentNotValidException ex) {
-        Map<String, Object> body = new LinkedHashMap<>();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        //Below are unnecessary, but useful. Timestamp will tell me when the exception occurred.
-        body.put("timestamp", new Date());
-        body.put("status", status.value());
-        //To get the actual error...
-        List<String> errors = ex
-                .getBindingResult()
-                .getFieldErrors() //Extracting the errors...
-                .stream() //To open a stream to build String messages...
-                .map(x -> x.getField() + " - " + x.getDefaultMessage()) //That consist of the name of the field that had the error and the message what's wrong.
-                .collect(Collectors.toList());
-        //These messages (what's wrong) are currently default ones... Unless I add my custom message
-        //in the brackets next to @NotNull (and other) annotations within my RestArmourCreateCommand.
-        body.put("errors", errors);
-        return new ResponseEntity<>(body, status);
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class) // When this exception is thrown -> method will be called.
+//    public ResponseEntity<Object> handleException(MethodArgumentNotValidException ex) {
+//        Map<String, Object> body = new LinkedHashMap<>();
+//        HttpStatus status = HttpStatus.BAD_REQUEST;
+//        //Below are unnecessary, but useful. Timestamp will tell me when the exception occurred.
+//        body.put("timestamp", new Date());
+//        body.put("status", status.value());
+//        //To get the actual error...
+//        List<String> errors = ex
+//                .getBindingResult()
+//                .getFieldErrors() //Extracting the errors...
+//                .stream() //To open a stream to build String messages...
+//                .map(x -> x.getField() + " - " + x.getDefaultMessage()) //That consist of the name of the field that had the error and the message what's wrong.
+//                .collect(Collectors.toList());
+//        //These messages (what's wrong) are currently default ones... Unless I add my custom message
+//        //in the brackets next to @NotNull (and other) annotations within my RestArmourCreateCommand.
+//        body.put("errors", errors);
+//        return new ResponseEntity<>(body, status);
+//    }
 
     /**
      * Another mini DTO. It is going to be used to avoid taking in and putting out pure entities.
