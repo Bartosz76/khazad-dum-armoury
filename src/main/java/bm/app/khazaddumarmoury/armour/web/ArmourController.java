@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,7 +16,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -92,6 +90,22 @@ public class ArmourController {
     }
 
     /**
+     * PUT is for the updating.
+     * Here I will be taking the details of the armour piece that I am to update. Just like I have RestCreateArmourCommand,
+     * I could use RestUpdateCreateCommand... but that would be the same thing as RestCreateArmourCommand, so I will
+     * rename it to make it fit for both creating and updating armour pieces.
+     */
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateArmour(@PathVariable Long id, @RequestBody RestArmourCommand command) {
+        UpdateArmourResponse response = armourUseCase.updateArmour(command.toUpdateCommand(id));
+        if (!response.isSuccess()) {
+            String message = String.join(", ", response.getErrors()); //getErrors() is a list and needs joining here before it can be displayed.
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
+        }
+    }
+
+    /**
      * Apart from just adding a new armour piece, I could also return the path to that new record while at it. I changed
      * the return type of .addArmour() methods in the service and repository (and their interfaces, obviously) to
      * Armour instead of void, because thanks to that - I will be able to get that new record's id!
@@ -106,8 +120,8 @@ public class ArmourController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> addArmour(@Valid @RequestBody RestCreateArmourCommand command) {
-        Armour armour = armourUseCase.addArmour(command.toCommand());
+    public ResponseEntity<Void> addArmour(@Valid @RequestBody ArmourController.RestArmourCommand command) {
+        Armour armour = armourUseCase.addArmour(command.toCreateCommand());
         URI uri = createdArmourUri(armour); //Here I am building the URI!
         return ResponseEntity.created(uri).build();
     }
@@ -172,7 +186,7 @@ public class ArmourController {
      * @NotBlank, @NotNull, @DecimalMin -> are annotations given to me by this project.
      */
     @Data
-    private static class RestCreateArmourCommand {
+    private static class RestArmourCommand {
         @NotBlank(message = "Provide the name of the armour piece.")
         private String name;
         @NotBlank(message = "Provide the type of the armour piece.")
@@ -190,8 +204,17 @@ public class ArmourController {
          * might need another kind of validation. So I am creating RestCreateArmourCommand as a 'wrapper', a stage to
          * pass through on the way to return a CreateArmourCommand. So basically another layer of abstraction.
          */
-        CreateArmourCommand toCommand() {
+        CreateArmourCommand toCreateCommand() {
             return new CreateArmourCommand(name, type, smith, year, price);
+        }
+
+        /**
+         * Like CreateArmourCommand - UpdateArmourCommand is defined in ArmourUseCase. I need to pass ID as a
+         * parameter, because it's not one of the RestArmourCommand's field (that's the class I am currently in).
+         *
+         */
+        UpdateArmourCommand toUpdateCommand(Long id) {
+            return new UpdateArmourCommand(id, name, type, smith, year, price);
         }
     }
 

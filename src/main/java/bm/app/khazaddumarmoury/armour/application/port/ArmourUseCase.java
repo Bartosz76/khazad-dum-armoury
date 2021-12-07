@@ -1,6 +1,7 @@
 package bm.app.khazaddumarmoury.armour.application.port;
 
 import bm.app.khazaddumarmoury.armour.domain.Armour;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
@@ -72,12 +73,13 @@ public interface ArmourUseCase {
      */
     @Value
     /**
-     * Adding the Builder to prevent copying and pasting both ways properties of the object being updated (line 89 in
+     * Adding the Builder to prevent copying and pasting both ways properties of the object being updated (line 139 in
      * the ApplicationStartUp). The idea is to not have to 'resupply' the values of the fields that are not being
      * updated - creating the new UpdateArmourCommand, adding a new name for instance... and doing 'armour.getSmith(),
      * armour.getYear() and so on to just complete this UpdateArmourCommand object.
      */
     @Builder
+    @AllArgsConstructor
     class UpdateArmourCommand {
         Long id;
         String name;
@@ -104,6 +106,9 @@ public interface ArmourUseCase {
             }
             if (year != null) {
                 armour.setYear(year);
+            }
+            if (price != null) {
+                armour.setPrice(price);
             }
             return armour;
             //If they ARE nulls, that means I don't want to change these fields and I want them to remain
