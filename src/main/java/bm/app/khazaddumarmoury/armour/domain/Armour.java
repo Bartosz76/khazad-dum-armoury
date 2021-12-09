@@ -16,6 +16,8 @@ public class Armour {
     private String smith;
     private Integer year;
     private BigDecimal price;
+    //An instance of an Armour will not hold the content of the file, but just the "pointer".
+    private String pictureId;
 
     /**
      * Id is not included, because it is set by the repository.

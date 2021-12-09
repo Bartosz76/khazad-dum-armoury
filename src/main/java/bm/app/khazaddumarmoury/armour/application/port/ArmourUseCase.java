@@ -40,6 +40,8 @@ public interface ArmourUseCase {
 
     UpdateArmourResponse updateArmour(UpdateArmourCommand command);
 
+    void updateArmourPainting(UpdateArmourPaintingCommand command);
+
     /**
      * This is basically a wrapper for other fields. By using it I can avoid having to pass all the fields separately
      * as arguments while also I don't want Id field to be taken as an argument now, do I? CreateArmourCommand is,
@@ -126,7 +128,17 @@ public interface ArmourUseCase {
         public static UpdateArmourResponse SUCCESS  = new UpdateArmourResponse(true, Collections.emptyList());
         boolean success;
         List<String> errors;
+    }
 
+    /**
+     * For accepting the incoming file!
+     */
+    @Value
+    class UpdateArmourPaintingCommand {
+        Long id;
+        byte[] file;
+        String contentType; // .png? .pdf? .jpg?
+        String filename;
     }
 }
 

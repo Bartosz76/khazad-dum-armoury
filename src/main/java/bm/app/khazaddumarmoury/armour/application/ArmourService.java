@@ -117,4 +117,14 @@ class ArmourService implements ArmourUseCase {
         })
         .orElseGet(() -> new UpdateArmourResponse(false, Collections.singletonList("Armour not found with id: " + command.getId())));
     }
+
+    @Override
+    public void updateArmourPainting(UpdateArmourPaintingCommand command) {
+        int length = command.getFile().length;
+        System.out.println("Received painting command: " + command.getFilename() + " worth " + length + " bytes!");
+        armourRepository.findById(command.getId())
+                .ifPresent(armour -> {
+//                    armour.setPictureId()
+                });
+    }
 }

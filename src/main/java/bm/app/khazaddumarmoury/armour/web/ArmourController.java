@@ -7,6 +7,7 @@ import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.*;
@@ -103,6 +105,25 @@ public class ArmourController {
             String message = String.join(", ", response.getErrors()); //getErrors() is a list and needs joining here before it can be displayed.
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
         }
+    }
+
+    /**
+     * HTTP requests can be received as Commands (deserialised from JSONs), but I need another mechanism if I want
+     * to process files.
+     * It's @Put because it updates a selected armour piece (I assume that a picture can be taken only after the
+     * armour is forged).
+     *
+     */
+    @PutMapping("{id}/picture")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void addArmourPainting(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
+        System.out.println("Received file: " + file.getOriginalFilename());
+        armourUseCase.updateArmourPainting(new UpdateArmourPaintingCommand(
+                id,
+                file.getBytes(),
+                file.getContentType(),
+                file.getOriginalFilename()
+        ));
     }
 
     /**
