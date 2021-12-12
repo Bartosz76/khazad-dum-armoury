@@ -112,6 +112,9 @@ public class ArmourController {
      * to process files.
      * It's @Put because it updates a selected armour piece (I assume that a picture can be taken only after the
      * armour is forged).
+     * Pictures usually are stored in external servers. They can also be stored in databases, but it's discouraged to
+     * do so with binary files. Pictures can also be stored in memory (in private projects). My paintings will be
+     * held in "upload" catalog.
      *
      */
     @PutMapping("{id}/picture")

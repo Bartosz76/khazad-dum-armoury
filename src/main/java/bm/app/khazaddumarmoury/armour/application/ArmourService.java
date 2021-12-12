@@ -3,20 +3,29 @@ package bm.app.khazaddumarmoury.armour.application;
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import bm.app.khazaddumarmoury.armour.domain.ArmourRepository;
+import bm.app.khazaddumarmoury.uploads.application.ports.UploadUseCase;
+import bm.app.khazaddumarmoury.uploads.domain.Upload;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static bm.app.khazaddumarmoury.uploads.application.ports.UploadUseCase.*;
+
 @Service
 @AllArgsConstructor
 class ArmourService implements ArmourUseCase {
 
     private final ArmourRepository armourRepository;
+    /**
+     * Uploads are in a different catalog, so I am taking to it from here via a port, not the
+     * concrete implementation of the interface, because hexagonal.
+     */
+    private final UploadUseCase upload;
 
     /**
-     * In case there are two implementations of ArmourRepository (there are), the @Qualifier
+     * In case there are two implementations of ArmourRepository, the @Qualifier
      * allows me to determine which one of the implementations is going to be injected.
      * What I provide as a String is the bean's name.
      */
@@ -118,13 +127,18 @@ class ArmourService implements ArmourUseCase {
         .orElseGet(() -> new UpdateArmourResponse(false, Collections.singletonList("Armour not found with id: " + command.getId())));
     }
 
+    /**
+     * Below I am receiving parameters as a dto and then, if the armour piece for which I want to add a
+     * painting exists, I am creating a new object out of the uploaded file with its parameters being initially
+     * provided ones but converted to another dto and then the id of the newly created upload is being passed to
+     * said armour piece. Next, I will save the file itself to memory.
+     */
     @Override
     public void updateArmourPainting(UpdateArmourPaintingCommand command) {
-        int length = command.getFile().length;
-        System.out.println("Received painting command: " + command.getFilename() + " worth " + length + " bytes!");
         armourRepository.findById(command.getId())
                 .ifPresent(armour -> {
-//                    armour.setPictureId()
+                    Upload savedUpload = upload.save(new SaveUploadCommand(command.getFilename(), command.getFile(), command.getContentType()));
+                    armour.setPaintingId(savedUpload.getId());
                 });
     }
 }
