@@ -141,4 +141,22 @@ class ArmourService implements ArmourUseCase {
                     armour.setPaintingId(savedUpload.getId());
                 });
     }
+
+    /**
+     * I have a dependency on UploadUseCase injected, so I can remove the id of the painting from Armour object and
+     * refer to the Upload itself (via interface -> service, of course).
+     * There is both .ifPresent() and an If, because the first I am checking if there's an armour piece and then
+     * if it contains any painting's id.
+     */
+    @Override
+    public void removeArmourPainting(Long id) {
+        armourRepository.findById(id)
+                .ifPresent(armour -> {
+                    if (armour.getPaintingId() != null) {
+                        upload.removeById(armour.getPaintingId());
+                        armour.setPaintingId(null);
+                        armourRepository.save(armour);
+                    }
+                });
+    }
 }

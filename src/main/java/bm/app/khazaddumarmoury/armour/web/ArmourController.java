@@ -115,6 +115,7 @@ public class ArmourController {
      * Pictures usually are stored in external servers. They can also be stored in databases, but it's discouraged to
      * do so with binary files. Pictures can also be stored in memory (in private projects). My paintings will be
      * held in "upload" catalog.
+     * Multipart is an object used to manage the file.
      *
      */
     @PutMapping("{id}/picture")
@@ -127,6 +128,17 @@ public class ArmourController {
                 file.getContentType(),
                 file.getOriginalFilename()
         ));
+    }
+
+    /**
+     * This is within ArmourController and not UploadsController because if I placed it within the latter, I would
+     * not be capable to delete the connection between the armour piece and its painting. The id of it would remain.
+     */
+
+    @DeleteMapping("/{id}/picture")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeArmourPainting(@PathVariable Long id) {
+        armourUseCase.removeArmourPainting(id);
     }
 
     /**

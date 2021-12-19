@@ -42,6 +42,7 @@ public interface ArmourUseCase {
 
     void updateArmourPainting(UpdateArmourPaintingCommand command);
 
+    void removeArmourPainting(Long id);
     /**
      * This is basically a wrapper for other fields. By using it I can avoid having to pass all the fields separately
      * as arguments while also I don't want Id field to be taken as an argument now, do I? CreateArmourCommand is,
