@@ -5,6 +5,7 @@ import bm.app.khazaddumarmoury.armour.domain.Armour;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -116,9 +117,11 @@ public class ArmourController {
      * do so with binary files. Pictures can also be stored in memory (in private projects). My paintings will be
      * held in "upload" catalog.
      * Multipart is an object used to manage the file.
-     *
+     * "consumes" in @PutMapping overwrites the default value of consumes which js application/json. I want it to
+     * consume a html form - because this is supposed to handle files, not JSONs! This will allow me to, e.g. send
+     * files via Swagger.
      */
-    @PutMapping("{id}/picture")
+    @PutMapping(value = "{id}/picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void addArmourPainting(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException {
         System.out.println("Received file: " + file.getOriginalFilename());
