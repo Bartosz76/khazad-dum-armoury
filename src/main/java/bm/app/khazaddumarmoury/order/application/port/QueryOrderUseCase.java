@@ -12,4 +12,6 @@ public interface QueryOrderUseCase {
 
     List<Order> findAll();
 
+    List<Order> findByRecipientName(String recipientName);
+
 }

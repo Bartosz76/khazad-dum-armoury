@@ -18,4 +18,9 @@ public class QueryOrderService implements QueryOrderUseCase {
     public List<Order> findAll() {
         return repository.findAll();
     }
+
+    @Override
+    public List<Order> findByRecipientName(String recipientName) {
+        return repository.findByRecipientName(recipientName);
+    }
 }

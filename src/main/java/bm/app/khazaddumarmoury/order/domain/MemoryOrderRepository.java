@@ -33,6 +33,17 @@ public class MemoryOrderRepository implements OrderRepository {
         return new ArrayList<>(hoard.values());
     }
 
+    @Override
+    public List<Order> findByRecipientName(String recipientName) {
+        List<Order> resultList = new ArrayList<>();
+        for (Map.Entry<Long, Order> entry : hoard.entrySet()) {
+            if (entry.getValue().getRecipient().getName().contains(recipientName)) {
+                resultList.add(entry.getValue());
+            }
+        }
+        return resultList;
+    }
+
     private long nextId() {
         return NEXT_ID.getAndIncrement();
     }

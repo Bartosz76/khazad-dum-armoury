@@ -21,7 +21,7 @@ public class PlaceOrderService implements PlaceOrderUseCase {
         Order save = repository.save(order);
         return PlaceOrderResponse.success(save.getId());
         /**
-         * Creating the order like I did it above, the Order's field status would be a null... but it won't be due
+         * Creating the order like I did above, the Order's field status would be a null... but it won't be due
          * to the setting of a default value for that field in the Order class.
          */
     }

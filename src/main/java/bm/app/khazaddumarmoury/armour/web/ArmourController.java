@@ -62,6 +62,7 @@ public class ArmourController {
     }
 
     /**
+
      * If I want a parameter to be optional, I can use @RequestParam(required = false)... or I can use an Optional.
      * I am moving the below logic to the method getAll() above. Don't want to lose param = something construction
      * though. That param = {"name"} means that this one param is required!
