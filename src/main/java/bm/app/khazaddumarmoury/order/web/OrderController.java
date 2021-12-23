@@ -20,14 +20,13 @@ public class OrderController {
 
     private final QueryOrderUseCase queryOrderUseCase;
 
-    @GetMapping("/{recipientName}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Order> getAll(@PathVariable Optional<String> recipientName,
+    public List<Order> getAll(@RequestParam Optional<String> recipientName,
                               @RequestParam(defaultValue = "10") int limit) {
         if (recipientName.isPresent()) {
             return queryOrderUseCase.findByRecipientName(recipientName.get());
         }
         return queryOrderUseCase.findAll().stream().limit(limit).collect(Collectors.toList());
     }
-
 }
