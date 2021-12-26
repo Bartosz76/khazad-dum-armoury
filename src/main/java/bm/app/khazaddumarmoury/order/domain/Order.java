@@ -2,6 +2,7 @@ package bm.app.khazaddumarmoury.order.domain;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 import java.math.BigDecimal;
@@ -46,5 +47,4 @@ public class Order {
         //.reduce allows me count the prices of all elements of the stream - to the value of zero,
         //add what comes next.
     }
-
 }

@@ -1,14 +1,14 @@
 package bm.app.khazaddumarmoury.order.web;
 
 import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase;
+import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
+import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
 import bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase;
 import bm.app.khazaddumarmoury.order.domain.Order;
-import bm.app.khazaddumarmoury.order.domain.Recipient;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     private final QueryOrderUseCase queryOrderUseCase;
+    private final PlaceOrderUseCase placeOrderUseCase;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -29,4 +30,11 @@ public class OrderController {
         }
         return queryOrderUseCase.findAll().stream().limit(limit).collect(Collectors.toList());
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public PlaceOrderResponse addOrder(@RequestBody PlaceOrderCommand command) {
+        return placeOrderUseCase.placeOrder(command);
+    }
+
 }
