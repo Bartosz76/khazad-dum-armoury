@@ -1,5 +1,6 @@
 package bm.app.khazaddumarmoury.order.web;
 
+import bm.app.khazaddumarmoury.order.application.port.DeleteOrderUseCase;
 import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase;
 import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
 import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
@@ -20,6 +21,7 @@ public class OrderController {
 
     private final QueryOrderUseCase queryOrderUseCase;
     private final PlaceOrderUseCase placeOrderUseCase;
+    private final DeleteOrderUseCase deleteOrderUseCase;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -35,6 +37,12 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public PlaceOrderResponse addOrder(@RequestBody PlaceOrderCommand command) {
         return placeOrderUseCase.placeOrder(command);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) {
+        deleteOrderUseCase.removeById(id);
     }
 
 }

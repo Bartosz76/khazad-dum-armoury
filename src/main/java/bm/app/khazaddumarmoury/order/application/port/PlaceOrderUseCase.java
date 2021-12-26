@@ -51,9 +51,7 @@ public interface PlaceOrderUseCase {
         /**
          * Below are static constructors.
          * This allows me to manually choose which constructor will be triggered
-         * (by typing PlaceOrderResponse.success(...)). These should not be called
-         * constructors, I think. These are just regular static methods, constructors
-         * shouldn't have names.
+         * (by typing PlaceOrderResponse.success(...)).
          */
         public static PlaceOrderResponse success(Long orderId) {
             return new PlaceOrderResponse(true, orderId, emptyList());
