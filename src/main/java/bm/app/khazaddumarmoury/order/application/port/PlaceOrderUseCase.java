@@ -3,6 +3,7 @@ package bm.app.khazaddumarmoury.order.application.port;
 import bm.app.khazaddumarmoury.order.domain.Order;
 import bm.app.khazaddumarmoury.order.domain.OrderItem;
 import bm.app.khazaddumarmoury.order.domain.Recipient;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
@@ -23,6 +24,8 @@ public interface PlaceOrderUseCase {
      */
 
     PlaceOrderResponse placeOrder(PlaceOrderCommand command);
+
+    UpdateOrderResponse updateOrder(UpdateOrderCommand command);
 
     /**
      * Again, I use the Command Pattern to have a 'wrapper' for fields I would be passing
@@ -60,5 +63,25 @@ public interface PlaceOrderUseCase {
         public static PlaceOrderResponse failure(String... errors) {
             return new PlaceOrderResponse(false, null, Arrays.asList(errors));
         }
+    }
+
+    @Value
+    @Builder
+    @AllArgsConstructor
+    class UpdateOrderCommand {
+        Long id;
+        List<OrderItem> items;
+        Recipient recipient;
+
+//        public Order updateFields() {
+//            if (items != null) {
+//                items.setItems
+//            }
+//        }
+
+    }
+
+    class UpdateOrderResponse {
+
     }
 }

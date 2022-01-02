@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -47,6 +48,11 @@ public class MemoryOrderRepository implements OrderRepository {
     @Override
     public void removeById(Long id) {
         hoard.remove(id);
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return Optional.ofNullable(hoard.get(id));
     }
 
     private long nextId() {

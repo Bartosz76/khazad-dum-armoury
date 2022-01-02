@@ -47,4 +47,12 @@ public class Order {
         //.reduce allows me count the prices of all elements of the stream - to the value of zero,
         //add what comes next.
     }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
+
+    public void setRecipient(Recipient recipient) {
+        this.recipient = recipient;
+    }
 }

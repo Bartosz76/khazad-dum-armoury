@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,5 +23,10 @@ public class QueryOrderService implements QueryOrderUseCase {
     @Override
     public List<Order> findByRecipientName(String recipientName) {
         return repository.findByRecipientName(recipientName);
+    }
+
+    @Override
+    public Optional<Order> findById(Long id) {
+        return repository.findById(id);
     }
 }

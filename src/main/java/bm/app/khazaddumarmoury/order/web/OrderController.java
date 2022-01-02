@@ -8,7 +8,9 @@ import bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase;
 import bm.app.khazaddumarmoury.order.domain.Order;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,17 @@ public class OrderController {
         return queryOrderUseCase.findAll().stream().limit(limit).collect(Collectors.toList());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        if (id.equals(97L)) {
+            throw new ResponseStatusException(HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS, "97 is illegal today!");
+        }
+        return queryOrderUseCase
+                .findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PlaceOrderResponse addOrder(@RequestBody PlaceOrderCommand command) {
@@ -44,5 +57,4 @@ public class OrderController {
     public void deleteById(@PathVariable Long id) {
         deleteOrderUseCase.removeById(id);
     }
-
 }
