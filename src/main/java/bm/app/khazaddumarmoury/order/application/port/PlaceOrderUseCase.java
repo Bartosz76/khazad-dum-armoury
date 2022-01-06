@@ -1,6 +1,5 @@
 package bm.app.khazaddumarmoury.order.application.port;
 
-import bm.app.khazaddumarmoury.order.domain.Order;
 import bm.app.khazaddumarmoury.order.domain.OrderItem;
 import bm.app.khazaddumarmoury.order.domain.Recipient;
 import lombok.AllArgsConstructor;
@@ -10,7 +9,6 @@ import lombok.Value;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.OptionalDouble;
 
 import static java.util.Collections.emptyList;
 
@@ -24,8 +22,6 @@ public interface PlaceOrderUseCase {
      */
 
     PlaceOrderResponse placeOrder(PlaceOrderCommand command);
-
-    UpdateOrderResponse updateOrder(UpdateOrderCommand command);
 
     /**
      * Again, I use the Command Pattern to have a 'wrapper' for fields I would be passing
@@ -78,10 +74,6 @@ public interface PlaceOrderUseCase {
 //                items.setItems
 //            }
 //        }
-
-    }
-
-    class UpdateOrderResponse {
 
     }
 }

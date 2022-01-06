@@ -6,7 +6,9 @@ import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrd
 import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
 import bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase;
 import bm.app.khazaddumarmoury.order.domain.Order;
+import bm.app.khazaddumarmoury.order.domain.OrderStatus;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase.UpdateOrderStatusCommand;
+import static bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase.UpdateOrderStatusResponse;
 
 @RequestMapping("/order")
 @RestController
@@ -52,9 +57,29 @@ public class OrderController {
         return placeOrderUseCase.placeOrder(command);
     }
 
+    @PutMapping("/{id}/status")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateOrderStatus(@PathVariable Long id, @RequestBody RestOrderCommand command) {
+        UpdateOrderStatusResponse response = queryOrderUseCase.updateOrderStatus(command.toUpdateStatusCommand(id));
+        if (!response.isSuccess()) {
+            String message = String.join(", ", response.getErrors());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
+        }
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         deleteOrderUseCase.removeById(id);
+    }
+
+    @Data
+    private static class RestOrderCommand {
+
+        OrderStatus status;
+
+        UpdateOrderStatusCommand toUpdateStatusCommand(Long id) {
+            return new UpdateOrderStatusCommand(id, status);
+        }
     }
 }

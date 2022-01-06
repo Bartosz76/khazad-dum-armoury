@@ -25,9 +25,4 @@ public class PlaceOrderService implements PlaceOrderUseCase {
          * to the setting of a default value for that field in the Order class.
          */
     }
-
-    @Override
-    public UpdateOrderResponse updateOrder(UpdateOrderCommand command) {
-        return null;
-    }
 }
