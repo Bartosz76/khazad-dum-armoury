@@ -6,18 +6,14 @@ import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrd
 import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
 import bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase;
 import bm.app.khazaddumarmoury.order.domain.Order;
-import bm.app.khazaddumarmoury.order.domain.OrderItem;
 import bm.app.khazaddumarmoury.order.domain.OrderStatus;
-import bm.app.khazaddumarmoury.order.domain.Recipient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,15 +53,13 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Void> addOrder(@RequestBody RestOrderCommand command) {
-        Order order = placeOrderUseCase.placeOrder(command.toPlaceCommand());
-        URI uri = createOrderUri(order);
-        return ResponseEntity.created(uri).build();
+    public PlaceOrderResponse addOrder(@RequestBody PlaceOrderCommand command) {
+        return placeOrderUseCase.placeOrder(command);
     }
 
     @PutMapping("/{id}/status")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateOrderStatus(@PathVariable Long id, @RequestBody RestOrderCommand command) {
+    public void updateOrderStatus(@PathVariable Long id, @RequestBody RestUpdateOrderCommand command) {
         UpdateOrderStatusResponse response = queryOrderUseCase.updateOrderStatus(command.toUpdateStatusCommand(id));
         if (!response.isSuccess()) {
             String message = String.join(", ", response.getErrors());
@@ -80,24 +74,11 @@ public class OrderController {
     }
 
     @Data
-    private static class RestOrderCommand {
-
-        List<OrderItem> items;
-        Recipient recipient;
+    private static class RestUpdateOrderCommand {
         OrderStatus status;
-
-        PlaceOrderCommand toPlaceCommand() {
-            return new PlaceOrderCommand(items, recipient);
-        }
 
         UpdateOrderStatusCommand toUpdateStatusCommand(Long id) {
             return new UpdateOrderStatusCommand(id, status);
         }
-    }
-
-    private URI createOrderUri(Order order) {
-        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + order.getId().toString())
-                .build()
-                .toUri();
     }
 }

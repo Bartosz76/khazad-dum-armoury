@@ -22,7 +22,7 @@ public interface PlaceOrderUseCase {
      * various tasks, so UseCases these Services will implement are multiple and various.
      */
 
-    Order placeOrder(PlaceOrderCommand command);
+    PlaceOrderResponse placeOrder(PlaceOrderCommand command);
 
     /**
      * Again, I use the Command Pattern to have a 'wrapper' for fields I would be passing
@@ -30,6 +30,7 @@ public interface PlaceOrderUseCase {
      * what is being passed into the order.
      * I could just pass in parameters instead... but this is more elegant.
      */
+    @Builder
     @Value
     class PlaceOrderCommand {
         /**
