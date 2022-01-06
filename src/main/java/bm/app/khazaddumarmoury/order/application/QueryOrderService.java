@@ -3,6 +3,7 @@ package bm.app.khazaddumarmoury.order.application;
 import bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase;
 import bm.app.khazaddumarmoury.order.domain.Order;
 import bm.app.khazaddumarmoury.order.domain.OrderRepository;
+import bm.app.khazaddumarmoury.order.domain.OrderStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

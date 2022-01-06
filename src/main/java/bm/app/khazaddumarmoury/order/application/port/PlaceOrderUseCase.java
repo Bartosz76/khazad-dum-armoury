@@ -1,5 +1,6 @@
 package bm.app.khazaddumarmoury.order.application.port;
 
+import bm.app.khazaddumarmoury.order.domain.Order;
 import bm.app.khazaddumarmoury.order.domain.OrderItem;
 import bm.app.khazaddumarmoury.order.domain.Recipient;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public interface PlaceOrderUseCase {
      * various tasks, so UseCases these Services will implement are multiple and various.
      */
 
-    PlaceOrderResponse placeOrder(PlaceOrderCommand command);
+    Order placeOrder(PlaceOrderCommand command);
 
     /**
      * Again, I use the Command Pattern to have a 'wrapper' for fields I would be passing
@@ -29,7 +30,6 @@ public interface PlaceOrderUseCase {
      * what is being passed into the order.
      * I could just pass in parameters instead... but this is more elegant.
      */
-    @Builder
     @Value
     class PlaceOrderCommand {
         /**
