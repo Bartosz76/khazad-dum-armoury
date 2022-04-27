@@ -2,14 +2,21 @@ package bm.app.khazaddumarmoury.armour.domain;
 
 import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @ToString
 @RequiredArgsConstructor
 @Getter
 @Setter
+/**
+ * An entity for the database.
+ */
+@Entity
 public class Armour {
 
+    @Id //The primary key. Refers to the first variable below the annotation.
     private Long id;
     private String name;
     private String type;
