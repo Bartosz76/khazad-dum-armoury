@@ -1,6 +1,7 @@
 package bm.app.khazaddumarmoury.armour.application;
 
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
+import bm.app.khazaddumarmoury.armour.db.ArmourJpaRepository;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import bm.app.khazaddumarmoury.armour.domain.ArmourRepository;
 import bm.app.khazaddumarmoury.uploads.application.ports.UploadUseCase;
@@ -17,7 +18,11 @@ import static bm.app.khazaddumarmoury.uploads.application.ports.UploadUseCase.*;
 @AllArgsConstructor
 class ArmourService implements ArmourUseCase {
 
-    private final ArmourRepository armourRepository;
+    /**
+     * Memory database is being traded for an actual one.
+     */
+    private final ArmourJpaRepository armourRepository;
+//    private final ArmourRepository armourRepository;
     /**
      * Uploads are in a different catalog, so I am taking to it from here via a port, not the
      * concrete implementation of the interface, because hexagonal.
@@ -113,7 +118,7 @@ class ArmourService implements ArmourUseCase {
 
     @Override
     public void removeById(Long id) {
-        armourRepository.removeById(id);
+        armourRepository.deleteById(id);
     }
 
     @Override
