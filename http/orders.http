@@ -1,0 +1,27 @@
+###
+POST http://localhost:8080/orders
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "armourId": 0,
+      "quantity": 2
+    },
+    {
+      "armourId": 1,
+      "quantity": 1
+    }
+  ],
+  "recipient": {
+    "name": "Gamil Zirak",
+    "runePhone": "123-456-789",
+    "street": "Heroes of Sugzalithar 6/6",
+    "hold": "Tardhaghar",
+    "holdCode": "66-666",
+    "runeEmail": "gzirak@example.org"
+  }
+}
+
+###
+GET http://localhost:8080/orders/2

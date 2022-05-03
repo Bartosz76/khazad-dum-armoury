@@ -20,15 +20,15 @@ public interface ArmourUseCase {
      * can be accessed via interfaces held in these 'ports'.
      */
 
+    List<Armour> findAll();
+
+    Optional<Armour> findById(Long id);
+
     List<Armour> findByName(String name);
 
     Optional<Armour> findOneByName(String name);
 
     List<Armour> findBySmith(String smith);
-
-    List<Armour> findAll();
-
-    Optional<Armour> findById(Long id);
 
     Optional<Armour> findOneByNameAndSmith(String name, String smith);
 

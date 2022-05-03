@@ -1,19 +1,20 @@
 package bm.app.khazaddumarmoury.order.domain;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 /**
  * Who is going to receive the armour forged.
  */
 
-@Value
+@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Recipient {
-    String name;
-    String runePhone;
-    String street;
-    String hold;
-    String holdCode;
-    String runeEmail;
+    private String name;
+    private String runePhone;
+    private String street;
+    private String hold;
+    private String holdCode;
+    private String runeEmail;
 }

@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @Primary <- Does exactly the same thing as @Qualified defined currently in ArmourService. In the case
  * of two possible implementations of an interface, shows which one should be used.
  */
-public class MemoryArmourRepository implements ArmourRepository {
+class MemoryArmourRepository implements ArmourRepository {
     //Memory, because all data is stored in memory and it needs to be reloaded
     //during the application's restart.
 

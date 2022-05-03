@@ -1,21 +1,16 @@
 package bm.app.khazaddumarmoury.armour.domain;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.math.BigDecimal;
 
-@ToString
-@RequiredArgsConstructor
 @Getter
 @Setter
-/**
- * An entity for the database.
- */
-@Entity
+@ToString
+@RequiredArgsConstructor
 public class Armour {
 
     /**
@@ -24,10 +19,8 @@ public class Armour {
      * the app won't compile and will throw an error:
      * "ids for this class must be manually assigned before calling save()"
      * "strategy = GenerationType.AUTO" will pick the best generation mechanism
-     * based on the type of the database.
+     * based on the type of the database. It is not required as it is a default value.
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String type;
@@ -48,5 +41,4 @@ public class Armour {
         this.price = price;
 
     }
-
 }

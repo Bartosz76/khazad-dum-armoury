@@ -13,17 +13,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice //To make it a Spring's bean!
-public class CustomGlobalExceptionHandler {
+class CustomGlobalExceptionHandler {
 
-    /**
-     *Explained in ArmourController.
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleException(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         HttpStatus status = HttpStatus.BAD_REQUEST;
         body.put("timestamp", new Date());
         body.put("status", status.value());
+        // Get all errors
         List<String> errors = ex
                 .getBindingResult()
                 .getFieldErrors()

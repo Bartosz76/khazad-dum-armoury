@@ -2,10 +2,7 @@ package bm.app.khazaddumarmoury.order.domain;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,24 +32,4 @@ public class Order {
 
     private LocalDateTime createdAt;
 
-    /**
-     * Counting the price of the armour piece.
-     */
-
-    public BigDecimal totalPrice() {
-        return items.stream()
-                .map(item -> item.getArmour().getPrice().multiply(new BigDecimal(item.getQuantity())))
-                //Up there I need to multiply because without it, it's just a single armour piece.
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        //.reduce allows me count the prices of all elements of the stream - to the value of zero,
-        //add what comes next.
-    }
-
-    public void setItems(List<OrderItem> items) {
-        this.items = items;
-    }
-
-    public void setRecipient(Recipient recipient) {
-        this.recipient = recipient;
-    }
 }

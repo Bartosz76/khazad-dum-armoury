@@ -1,5 +1,7 @@
-package bm.app.khazaddumarmoury.order.domain;
+package bm.app.khazaddumarmoury.order.infrastructure;
 
+import bm.app.khazaddumarmoury.order.domain.Order;
+import bm.app.khazaddumarmoury.order.domain.OrderRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -11,8 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
-public class MemoryOrderRepository implements OrderRepository {
-
+class MemoryOrderRepository implements OrderRepository {
     private final Map<Long, Order> hoard = new ConcurrentHashMap<>();
     private final AtomicLong NEXT_ID = new AtomicLong(0L);
 
@@ -29,25 +30,13 @@ public class MemoryOrderRepository implements OrderRepository {
         return order;
     }
 
+    private long nextId() {
+        return NEXT_ID.incrementAndGet();
+    }
+
     @Override
     public List<Order> findAll() {
         return new ArrayList<>(hoard.values());
-    }
-
-    @Override
-    public List<Order> findByRecipientName(String recipientName) {
-        List<Order> resultList = new ArrayList<>();
-        for (Map.Entry<Long, Order> entry : hoard.entrySet()) {
-            if (entry.getValue().getRecipient().getName().contains(recipientName)) {
-                resultList.add(entry.getValue());
-            }
-        }
-        return resultList;
-    }
-
-    @Override
-    public void removeById(Long id) {
-        hoard.remove(id);
     }
 
     @Override
@@ -55,7 +44,8 @@ public class MemoryOrderRepository implements OrderRepository {
         return Optional.ofNullable(hoard.get(id));
     }
 
-    private long nextId() {
-        return NEXT_ID.getAndIncrement();
+    @Override
+    public void deleteById(Long id) {
+        hoard.remove(id);
     }
 }

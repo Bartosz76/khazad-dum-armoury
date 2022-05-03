@@ -21,9 +21,9 @@ public class KhazadDumArmouryApplication {
 //		return new TardhagharArmourRepository();
 //	}
 
-	@Bean
-	String query() {
-		return "Mirror";
-	}
-
+//	@Bean
+//	String query() {
+//		return "Mirror";
+//	}
+//
 }

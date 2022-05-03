@@ -3,9 +3,9 @@ package bm.app.khazaddumarmoury;
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase.CreateArmourCommand;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
-import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase;
-import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderCommand;
-import bm.app.khazaddumarmoury.order.application.port.PlaceOrderUseCase.PlaceOrderResponse;
+import bm.app.khazaddumarmoury.order.application.port.ManipulateOrderUseCase;
+import bm.app.khazaddumarmoury.order.application.port.ManipulateOrderUseCase.PlaceOrderCommand;
+import bm.app.khazaddumarmoury.order.application.port.ManipulateOrderUseCase.PlaceOrderResponse;
 import bm.app.khazaddumarmoury.order.application.port.QueryOrderUseCase;
 import bm.app.khazaddumarmoury.order.domain.OrderItem;
 import bm.app.khazaddumarmoury.order.domain.Recipient;
@@ -34,8 +34,8 @@ public class ApplicationStartup implements CommandLineRunner {
      * which holds my services!
      */
     private final ArmourUseCase armourUseCase;
-    private final PlaceOrderUseCase placeOrderUseCase;
-    private final QueryOrderUseCase queryOrderUseCase;
+    private final ManipulateOrderUseCase placeOrder;
+    private final QueryOrderUseCase queryOrder;
     private final String name;
     private final String smith;
     private final Long limit;
@@ -45,14 +45,14 @@ public class ApplicationStartup implements CommandLineRunner {
      * augment the field 'name'.
      */
     public ApplicationStartup(ArmourUseCase armourUseCase,
-                              PlaceOrderUseCase placeOrderUseCase,
-                              QueryOrderUseCase queryOrderUseCase,
+                              ManipulateOrderUseCase placeOrder,
+                              QueryOrderUseCase queryOrder,
                               @Value("${khazad.armoury.query}") String name, // this is defined in application.properties!
                               @Value("${khazad.armoury.second.query}") String smith,
                               @Value("${khazad.armoury.limit:3}") Long limit) {     // the limit of findings I want. It's defined in
         this.armourUseCase = armourUseCase;                 // application.properties too, but after the
-        this.placeOrderUseCase = placeOrderUseCase;         // colon I specified the default value!
-        this.queryOrderUseCase = queryOrderUseCase;
+        this.placeOrder = placeOrder;         // colon I specified the default value!
+        this.queryOrder = queryOrder;
         this.name = name;
         this.smith = smith;
         this.limit = limit;
@@ -69,7 +69,7 @@ public class ApplicationStartup implements CommandLineRunner {
      */
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         initData();
         searchArmour();
         placeOrder();
@@ -96,19 +96,21 @@ public class ApplicationStartup implements CommandLineRunner {
         PlaceOrderCommand command = PlaceOrderCommand
                 .builder()
                 .recipient(recipient)
-                .item(new OrderItem(mirrorwrath, 2))
-                .item(new OrderItem(darkstar, 4))
+                .item(new OrderItem(mirrorwrath.getId(),  2))
+                .item(new OrderItem(darkstar.getId(), 4)  )
                 .build();
 
         //Placing the order itself.
-        PlaceOrderResponse response = placeOrderUseCase.placeOrder(command);
-        System.out.println("Created the order with id: " + response.getOrderId());
+        PlaceOrderResponse response = placeOrder.placeOrder(command);
+        String result = response.handle(
+                orderId -> "Created ORDER with id: " + orderId,
+                error -> "Failed to created order: " + error
+        );
+        System.out.println(result);
 
         //Listing all orders.
-        queryOrderUseCase.findAll()
-                .forEach(order -> {
-                    System.out.println("Placed an order with a total price of: " + order.totalPrice() + ". Details of the order: " + order);
-                });
+        queryOrder.findAll()
+                .forEach(order -> System.out.println("GOT ORDER WITH TOTAL PRICE: " + order.totalPrice() + " DETAILS: " + order));
     }
 
     private void searchArmour() {
@@ -149,6 +151,4 @@ public class ApplicationStartup implements CommandLineRunner {
                     System.out.println("Updating the armour with result: " + response.isSuccess());
                 });
     }
-
-
 }

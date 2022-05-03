@@ -1,7 +1,6 @@
 package bm.app.khazaddumarmoury.armour.application;
 
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
-import bm.app.khazaddumarmoury.armour.db.ArmourJpaRepository;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
 import bm.app.khazaddumarmoury.armour.domain.ArmourRepository;
 import bm.app.khazaddumarmoury.uploads.application.ports.UploadUseCase;
@@ -9,10 +8,12 @@ import bm.app.khazaddumarmoury.uploads.domain.Upload;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static bm.app.khazaddumarmoury.uploads.application.ports.UploadUseCase.*;
+import static bm.app.khazaddumarmoury.uploads.application.ports.UploadUseCase.SaveUploadCommand;
 
 @Service
 @AllArgsConstructor
@@ -21,8 +22,7 @@ class ArmourService implements ArmourUseCase {
     /**
      * Memory database is being traded for an actual one.
      */
-    private final ArmourJpaRepository armourRepository;
-//    private final ArmourRepository armourRepository;
+    private final ArmourRepository armourRepository;
     /**
      * Uploads are in a different catalog, so I am taking to it from here via a port, not the
      * concrete implementation of the interface, because hexagonal.
@@ -118,7 +118,7 @@ class ArmourService implements ArmourUseCase {
 
     @Override
     public void removeById(Long id) {
-        armourRepository.deleteById(id);
+        armourRepository.removeById(id);
     }
 
     @Override

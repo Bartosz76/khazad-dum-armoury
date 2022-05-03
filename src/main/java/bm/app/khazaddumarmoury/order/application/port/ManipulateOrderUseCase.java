@@ -1,7 +1,8 @@
 package bm.app.khazaddumarmoury.order.application.port;
 
-import bm.app.khazaddumarmoury.order.domain.Order;
+import bm.app.khazaddumarmoury.commons.Either;
 import bm.app.khazaddumarmoury.order.domain.OrderItem;
+import bm.app.khazaddumarmoury.order.domain.OrderStatus;
 import bm.app.khazaddumarmoury.order.domain.Recipient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static java.util.Collections.emptyList;
 
-public interface PlaceOrderUseCase {
+public interface ManipulateOrderUseCase {
 
     /**
      * This will be used to create new orders.
@@ -24,6 +25,10 @@ public interface PlaceOrderUseCase {
 
     PlaceOrderResponse placeOrder(PlaceOrderCommand command);
 
+    void deleteOrderById(Long id);
+
+    void updateOrderStatus(Long id, OrderStatus status);
+
     /**
      * Again, I use the Command Pattern to have a 'wrapper' for fields I would be passing
      * in if I wasn't using a Command. So this is my mini DTO. The Command encapsulates
@@ -32,6 +37,7 @@ public interface PlaceOrderUseCase {
      */
     @Builder
     @Value
+    @AllArgsConstructor
     class PlaceOrderCommand {
         /**
          * If I have collections in my Lombok's Builder, I can get additional methods
@@ -42,11 +48,10 @@ public interface PlaceOrderUseCase {
         Recipient recipient;
     }
 
-    @Value
-    class PlaceOrderResponse {
-        boolean success;
-        Long orderId;
-        List<String> errors;
+    class PlaceOrderResponse extends Either<String, Long> {
+        public PlaceOrderResponse(boolean success, String left, Long right) {
+            super(success, left, right);
+        }
 
         /**
          * Below are static constructors.
@@ -54,27 +59,11 @@ public interface PlaceOrderUseCase {
          * (by typing PlaceOrderResponse.success(...)).
          */
         public static PlaceOrderResponse success(Long orderId) {
-            return new PlaceOrderResponse(true, orderId, emptyList());
+            return new PlaceOrderResponse(true, null, orderId);
         }
 
-        public static PlaceOrderResponse failure(String... errors) {
-            return new PlaceOrderResponse(false, null, Arrays.asList(errors));
+        public static PlaceOrderResponse failure(String error) {
+            return new PlaceOrderResponse(false, error, null);
         }
-    }
-
-    @Value
-    @Builder
-    @AllArgsConstructor
-    class UpdateOrderCommand {
-        Long id;
-        List<OrderItem> items;
-        Recipient recipient;
-
-//        public Order updateFields() {
-//            if (items != null) {
-//                items.setItems
-//            }
-//        }
-
     }
 }

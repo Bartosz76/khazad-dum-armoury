@@ -2,6 +2,7 @@ package bm.app.khazaddumarmoury.armour.web;
 
 import bm.app.khazaddumarmoury.armour.application.port.ArmourUseCase;
 import bm.app.khazaddumarmoury.armour.domain.Armour;
+import bm.app.khazaddumarmoury.web.CreatedURI;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -177,7 +178,7 @@ public class ArmourController {
     }
 
     private URI createdArmourUri(Armour armour) {
-        return ServletUriComponentsBuilder.fromCurrentRequestUri().path("/" + armour.getId().toString()).build().toUri();
+        return new CreatedURI("/" + armour.getId().toString()).uri();
     }
 
     /**

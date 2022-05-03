@@ -80,5 +80,4 @@ public class UploadsController {
         String filename;
         LocalDateTime createdAt;
     }
-
 }
